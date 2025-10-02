@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,9 +17,14 @@ public class PlayerMovement : MonoBehaviour
     private float coyoteTime = 0;
     private int groundCount = 0;
     private Rigidbody2D rb;
-
+    
     void Update()
     {
-        
+
+    }
+
+    public void OnMove(InputAction.CallbackContext context)
+    {
+        Debug.Log("Moving!");
     }
 }
