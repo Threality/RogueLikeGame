@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     [Header("Colliders")]
     [SerializeField] private GroundCheck groundCheck;
+    
     // Set up hidden values 
     private float coyoteTime = 0;
     private Rigidbody2D rb;
@@ -69,10 +70,5 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
         {
             rb.linearVelocityY = DEFAULT_JUMP_FORCE;
         }
-    }
-
-    public void OnCollisionEnter2D()
-    {
-        
     }
 }

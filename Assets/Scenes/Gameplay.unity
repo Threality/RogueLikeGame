@@ -255,7 +255,7 @@ GameObject:
   - component: {fileID: 462966821}
   m_Layer: 0
   m_Name: WorldTiles
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -312,7 +312,7 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
-  m_UseDelaunayMesh: 0
+  m_UseDelaunayMesh: 1
 --- !u!483693784 &462966822
 TilemapRenderer:
   m_ObjectHideFlags: 0
@@ -4170,10 +4170,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   MAX_SPEED: 10
   ACCELERATION: 10
-  DECELERATION: 0
-  DEFAULT_JUMP_FORCE: 3
+  DECELERATION: 10
+  DEFAULT_JUMP_FORCE: 10
   DEFAULT_COYOTE: 5
-  FeetCollider: {fileID: 2048301377}
+  groundCheck: {fileID: 2048301381}
 --- !u!114 &1700493604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4278,7 +4278,7 @@ CapsuleCollider2D:
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 1b0e7f8bdff50b84fbd31ad565273773, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -4320,7 +4320,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -4375,6 +4375,7 @@ GameObject:
   - component: {fileID: 2048301378}
   - component: {fileID: 2048301380}
   - component: {fileID: 2048301379}
+  - component: {fileID: 2048301381}
   m_Layer: 0
   m_Name: Feet
   m_TagString: Untagged
@@ -4501,6 +4502,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &2048301381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2048301377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 389e7ce71d4155b44a54534d81c46ab9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  groundCount: 0
 --- !u!1 &2097669048
 GameObject:
   m_ObjectHideFlags: 0
