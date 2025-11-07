@@ -4170,8 +4170,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   MAX_SPEED: 10
   ACCELERATION: 10
+<<<<<<< Updated upstream
   DECELERATION: 0
   DEFAULT_JUMP_FORCE: 3
+=======
+  DECELERATION: 10
+  DEFAULT_JUMP_FORCE: 15
+>>>>>>> Stashed changes
   DEFAULT_COYOTE: 5
   FeetCollider: {fileID: 2048301377}
 --- !u!114 &1700493604

@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovementActions
 {
+    #region Setup
+
     // Allow for editing variables in the inspector
     [Header("Base Movement Settings")]
     public float MAX_SPEED;
@@ -23,6 +25,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     void OnEnable()
     {
+        // Connect player input and rigidbody to script
         rb = GetComponent<Rigidbody2D>();
         PlayerInputManager.Instance.playerControls.PlayerMovement.Enable();
         PlayerInputManager.Instance.playerControls.PlayerMovement.SetCallbacks(this);
@@ -30,16 +33,20 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     void OnDisable()
     {
+        // Disconnect input to prevent null references
         PlayerInputManager.Instance.playerControls.PlayerMovement.Disable();
         PlayerInputManager.Instance.playerControls.PlayerMovement.RemoveCallbacks(this);
     }
+
+    #endregion
+    #region Movement
 
     void Update()
     {
         // Check grounded state
         coyoteTime = groundCheck.IsGrounded() ? DEFAULT_COYOTE : coyoteTime;
 
-        // ----Move the player----
+        // Move the player
         if (movementInput == 0)
         {
             // If no player input - Decelerate
@@ -58,21 +65,31 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
         coyoteTime = coyoteTime < 0 ? coyoteTime : coyoteTime - 1;
     }
 
+    #endregion
+    #region Input
+
     public void OnMove(InputAction.CallbackContext context)
     {
+        // Read the players horizontal input
         movementInput = context.ReadValue<float>();
     }
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        // If the player is currently or was recently
         if (coyoteTime >= 0)
         {
             rb.linearVelocityY = DEFAULT_JUMP_FORCE;
         }
+        coyoteTime = -1;
     }
+<<<<<<< Updated upstream:Assets/Scripts/Player/PlayerMovement.cs
 
     public void OnCollisionEnter2D()
     {
         
     }
+=======
+    #endregion
+>>>>>>> Stashed changes:Assets/Scripts/Player/Movement/PlayerMovement.cs
 }
