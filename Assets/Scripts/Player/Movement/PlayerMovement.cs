@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     [Header("Colliders")]
     [SerializeField] private GroundCheck groundCheck;
+    
     // Set up hidden values 
     private float coyoteTime = 0;
     private Rigidbody2D rb;
@@ -47,6 +48,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
         coyoteTime = groundCheck.IsGrounded() ? DEFAULT_COYOTE : coyoteTime;
 
         // Move the player
+        // ----Move the player----
         if (movementInput == 0)
         {
             // If no player input - Decelerate
@@ -71,6 +73,8 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
     public void OnMove(InputAction.CallbackContext context)
     {
         // Read the players horizontal input
+    public void OnMove(InputAction.CallbackContext context)
+    {
         movementInput = context.ReadValue<float>();
     }
 
@@ -89,4 +93,5 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     }
     #endregion
+    }
 }

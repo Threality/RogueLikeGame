@@ -7,6 +7,7 @@ public class PlayerContainer : MonoBehaviour
     public int MAX_HEALTH;
     public int health;
     public int[,] items = new int[9,5];
+    // + Array for Items
 
     private void Awake()
     {

@@ -615,7 +615,7 @@
             "id": "af06d798-8237-411b-9cfa-f5e72aa8e701",
             "actions": [
                 {
-                    "name": "New action",
+                    "name": "UseItem",
                     "type": "Button",
                     "id": "68a166fb-3d15-4ba3-950c-e0753538cff8",
                     "expectedControlType": "",
@@ -628,11 +628,11 @@
                 {
                     "name": "",
                     "id": "5d008dd9-b158-467c-b94c-9f3549b640f3",
-                    "path": "",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "UseItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
