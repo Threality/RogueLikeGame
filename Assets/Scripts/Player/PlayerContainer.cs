@@ -6,6 +6,7 @@ public class PlayerContainer : MonoBehaviour
     public static PlayerContainer instance;
     public int MAX_HEALTH;
     public int health;
+    public int[,] items = new int[9,5];
     // + Array for Items
 
     private void Awake()
@@ -13,4 +14,6 @@ public class PlayerContainer : MonoBehaviour
         if (instance == null) instance = this;
         else Destroy(gameObject);
     }
+
+    
 }
