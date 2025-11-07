@@ -1,24 +1,45 @@
 using System;
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public static class PlayerManager
 {
+    #region Setup
     public enum Events
     {
-        PlayerHit
+        PlayerHit,
+        PlayerUseItem,
+        PlayerTakeDamage,
+        PlayerDeath,
     }
-    public Action OnPlayerHit;
+    // Setup all events
+    public static Action OnPlayerHit;
+    public static Action OnPlayerUseItem;
+    public static Action OnPlayerTakeDamage;
+    public static Action OnPlayerDeath;
 
-    public void TriggerEvent(Events curEvent)
+    #endregion
+    #region Event Calling
+
+    public static void TriggerEvent(Events curEvent)
     {
         switch (curEvent)
         {
-            case 0: // Player is damaged
+            case Events.PlayerHit:
                 OnPlayerHit.Invoke();
+                break;
+            case Events.PlayerUseItem:
+                OnPlayerUseItem.Invoke();
+                break;
+            case Events.PlayerTakeDamage:
+                OnPlayerTakeDamage.Invoke();
+                break;
+            case Events.PlayerDeath:
+                OnPlayerDeath.Invoke();
                 break;
             default:
                 Debug.LogWarning("Attempted to call player event but no event was found!");
                 break;
         }
     }
+    #endregion
 }

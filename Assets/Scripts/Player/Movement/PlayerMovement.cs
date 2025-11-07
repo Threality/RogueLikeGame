@@ -48,7 +48,6 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
         coyoteTime = groundCheck.IsGrounded() ? DEFAULT_COYOTE : coyoteTime;
 
         // Move the player
-        // ----Move the player----
         if (movementInput == 0)
         {
             // If no player input - Decelerate
@@ -70,9 +69,9 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
     #endregion
     #region Input
 
-    // Read the players horizontal input
     public void OnMove(InputAction.CallbackContext context)
     {
+        // Read the players horizontal input
         movementInput = context.ReadValue<float>();
     }
 
@@ -84,11 +83,6 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
             rb.linearVelocityY = DEFAULT_JUMP_FORCE;
         }
         coyoteTime = -1;
-    }
-
-    public void OnCollisionEnter2D()
-    {
-
     }
     #endregion
 }
