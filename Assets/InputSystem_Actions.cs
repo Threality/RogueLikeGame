@@ -701,7 +701,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ""id"": ""af06d798-8237-411b-9cfa-f5e72aa8e701"",
             ""actions"": [
                 {
-                    ""name"": ""New action"",
+                    ""name"": ""UseItem"",
                     ""type"": ""Button"",
                     ""id"": ""68a166fb-3d15-4ba3-950c-e0753538cff8"",
                     ""expectedControlType"": """",
@@ -714,11 +714,11 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""5d008dd9-b158-467c-b94c-9f3549b640f3"",
-                    ""path"": """",
+                    ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""New action"",
+                    ""action"": ""UseItem"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -806,7 +806,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
         // PlayerInteraction
         m_PlayerInteraction = asset.FindActionMap("PlayerInteraction", throwIfNotFound: true);
-        m_PlayerInteraction_Newaction = m_PlayerInteraction.FindAction("New action", throwIfNotFound: true);
+        m_PlayerInteraction_UseItem = m_PlayerInteraction.FindAction("UseItem", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1191,7 +1191,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     // PlayerInteraction
     private readonly InputActionMap m_PlayerInteraction;
     private List<IPlayerInteractionActions> m_PlayerInteractionActionsCallbackInterfaces = new List<IPlayerInteractionActions>();
-    private readonly InputAction m_PlayerInteraction_Newaction;
+    private readonly InputAction m_PlayerInteraction_UseItem;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerInteraction".
     /// </summary>
@@ -1204,9 +1204,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public PlayerInteractionActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "PlayerInteraction/Newaction".
+        /// Provides access to the underlying input action "PlayerInteraction/UseItem".
         /// </summary>
-        public InputAction @Newaction => m_Wrapper.m_PlayerInteraction_Newaction;
+        public InputAction @UseItem => m_Wrapper.m_PlayerInteraction_UseItem;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1233,9 +1233,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerInteractionActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerInteractionActionsCallbackInterfaces.Add(instance);
-            @Newaction.started += instance.OnNewaction;
-            @Newaction.performed += instance.OnNewaction;
-            @Newaction.canceled += instance.OnNewaction;
+            @UseItem.started += instance.OnUseItem;
+            @UseItem.performed += instance.OnUseItem;
+            @UseItem.canceled += instance.OnUseItem;
         }
 
         /// <summary>
@@ -1247,9 +1247,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="PlayerInteractionActions" />
         private void UnregisterCallbacks(IPlayerInteractionActions instance)
         {
-            @Newaction.started -= instance.OnNewaction;
-            @Newaction.performed -= instance.OnNewaction;
-            @Newaction.canceled -= instance.OnNewaction;
+            @UseItem.started -= instance.OnUseItem;
+            @UseItem.performed -= instance.OnUseItem;
+            @UseItem.canceled -= instance.OnUseItem;
         }
 
         /// <summary>
@@ -1456,11 +1456,11 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     public interface IPlayerInteractionActions
     {
         /// <summary>
-        /// Method invoked when associated input action "New action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "UseItem" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnNewaction(InputAction.CallbackContext context);
+        void OnUseItem(InputAction.CallbackContext context);
     }
 }
