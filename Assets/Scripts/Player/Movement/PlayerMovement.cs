@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -56,7 +55,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
         else
         {
             // If player input - Move
-            rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, movementInput * MAX_SPEED, ACCELERATION * Time.deltaTime);
+            rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, MAX_SPEED * movementInput, ACCELERATION * Time.deltaTime);
         }
     }
 

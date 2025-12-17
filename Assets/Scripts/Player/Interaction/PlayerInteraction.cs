@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerInteraction: MonoBehaviour, InputSystem_Actions.IPlayerInteractionActions
+public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInteractionActions
 {
     #region Setup
     void OnEnable()
@@ -27,27 +27,31 @@ public class PlayerInteraction: MonoBehaviour, InputSystem_Actions.IPlayerIntera
     #endregion
     #region Player Interaction
 
-    private void OnHit()
+    private void OnHit(Context context)
     {
-        // If the player does not have I frames remaining - take damage
-        if (PlayerContainer.instance.immunity == -1)
+        // If the player does not have i-frames remaining - take damage
+        if (PlayerContainer.instance.immunity < 0)
         {
-            PlayerManager.TriggerEvent(PlayerManager.Events.PlayerTakeDamage/*, damage*/);
+            Debug.Log("Player was hit");
+            PlayerManager.TriggerEvent(PlayerManager.Events.PlayerTakeDamage, context);
         }
     }
 
-    private void TakeDamage()
+    private void TakeDamage(Context context)
     {
-        PlayerContainer.instance.health -= 1;
+        // Damage player and prevent damage for a certain amount of time.
+        PlayerContainer.instance.health -= context.damage ?? 1;
+        PlayerContainer.instance.immunity  = PlayerContainer.instance.DEFAULT_IMMUNITY;
+        
         // If the players health is less than or equal to 0 - kill the player
         if (PlayerContainer.instance.health <= 0 && PlayerContainer.instance.playerIsAlive)
         {
             PlayerContainer.instance.health = 0;
-            PlayerManager.TriggerEvent(PlayerManager.Events.PlayerDeath);
+            PlayerManager.TriggerEvent(PlayerManager.Events.PlayerDeath, context);
         }
     }
 
-    private void Death()
+    private void Death(Context context)
     {
         // Mark the player as dead
         PlayerContainer.instance.playerIsAlive = false;

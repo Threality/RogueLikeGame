@@ -22,10 +22,6 @@ public class GroundCheck : MonoBehaviour
 
     public bool IsGrounded()
     {
-        if (groundCount > 0)
-        {
-            return true;
-        }
-        return false;
+        return (groundCount > 0);
     }
 }
