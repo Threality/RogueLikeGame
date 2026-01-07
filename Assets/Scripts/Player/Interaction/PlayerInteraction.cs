@@ -9,9 +9,9 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         // Connect player input and events to script
         PlayerInputManager.Instance.playerControls.PlayerInteraction.Enable();
         PlayerInputManager.Instance.playerControls.PlayerInteraction.SetCallbacks(this);
-        PlayerManager.OnPlayerTakeDamage += TakeDamage;
-        PlayerManager.OnPlayerHit += OnHit;
-        PlayerManager.OnPlayerDeath += Death;
+        PlayerEventManager.OnPlayerTakeDamage += TakeDamage;
+        PlayerEventManager.OnPlayerHit += OnHit;
+        PlayerEventManager.OnPlayerDeath += Death;
     }
 
     void OnDisable()
@@ -19,25 +19,25 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         // Disconnect input and events to prevent null references
         PlayerInputManager.Instance.playerControls.PlayerInteraction.Disable();
         PlayerInputManager.Instance.playerControls.PlayerInteraction.RemoveCallbacks(this);
-        PlayerManager.OnPlayerTakeDamage -= TakeDamage;
-        PlayerManager.OnPlayerHit -= OnHit;
-        PlayerManager.OnPlayerDeath -= Death;
+        PlayerEventManager.OnPlayerTakeDamage -= TakeDamage;
+        PlayerEventManager.OnPlayerHit -= OnHit;
+        PlayerEventManager.OnPlayerDeath -= Death;
     }
 
     #endregion
     #region Player Interaction
 
-    private void OnHit(Context context)
+    private void OnHit(PlayerContext context)
     {
         // If the player does not have i-frames remaining - take damage
         if (PlayerContainer.instance.immunity < 0)
         {
             Debug.Log("Player was hit");
-            PlayerManager.TriggerEvent(PlayerManager.Events.PlayerTakeDamage, context);
+            PlayerEventManager.TriggerEvent(PlayerEventManager.Events.PlayerTakeDamage, context);
         }
     }
 
-    private void TakeDamage(Context context)
+    private void TakeDamage(PlayerContext context)
     {
         // Damage player and prevent damage for a certain amount of time.
         PlayerContainer.instance.health -= context.damage ?? 1;
@@ -47,11 +47,11 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         if (PlayerContainer.instance.health <= 0 && PlayerContainer.instance.playerIsAlive)
         {
             PlayerContainer.instance.health = 0;
-            PlayerManager.TriggerEvent(PlayerManager.Events.PlayerDeath, context);
+            PlayerEventManager.TriggerEvent(PlayerEventManager.Events.PlayerDeath, context);
         }
     }
 
-    private void Death(Context context)
+    private void Death(PlayerContext context)
     {
         // Mark the player as dead
         PlayerContainer.instance.playerIsAlive = false;

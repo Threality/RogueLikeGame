@@ -3,8 +3,12 @@ using UnityEngine;
 public class PlayerContainer : MonoBehaviour
 {
     public static PlayerContainer instance;
+
+    // Constant values
     public int MAX_HEALTH = 10;
     public int DEFAULT_IMMUNITY = 20;
+
+    // Player stats
     public int health;
     public int immunity;
     public int[,] inventory = new int[9, 5];

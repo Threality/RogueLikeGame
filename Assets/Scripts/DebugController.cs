@@ -13,7 +13,7 @@ public class InteractionDebugger : Editor
         if(GUILayout.Button("Hit Player"))
         {
             Debug.Log("Attempting to hit player");
-            PlayerManager.TriggerEvent(PlayerManager.Events.PlayerHit, new Context());
+            PlayerEventManager.TriggerEvent(PlayerEventManager.Events.PlayerHit, new PlayerContext());
         }
     }
 }
