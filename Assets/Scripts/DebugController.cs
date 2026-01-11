@@ -17,3 +17,19 @@ public class InteractionDebugger : Editor
         }
     }
 }
+
+[CustomEditor (typeof(InventoryManager))]
+public class InventoryDebugger : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        InventoryManager inventory = (InventoryManager)target;
+
+        DrawDefaultInspector();
+
+        if(GUILayout.Button("Add item"))
+        {
+            InventoryManager.instance.Add(InventoryManager.instance.defaultItem);
+        }
+    }
+}

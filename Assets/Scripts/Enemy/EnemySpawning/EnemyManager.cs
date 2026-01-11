@@ -51,7 +51,7 @@ public class EnemyManager : MonoBehaviour
         // Check whether an enemy should be spawned
         if (difficulty >= rand)
         {
-            Debug.Log("Attempting to spawn enemy");
+            // Debug.Log("Attempting to spawn enemy");
             AttemptToSpawnEnemy();
         }
     }
