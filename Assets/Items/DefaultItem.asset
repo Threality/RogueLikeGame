@@ -17,9 +17,13 @@ MonoBehaviour:
   rarity: 0
   spawnWeight: 10
   spawnBiomes: 
-  isUsable: 0
-  isWeapon: 0
-  damage: 0
-  hitboxWidth: 0
-  hitboxHeight: 0
-  projectile: {fileID: 0}
+  isUsable: 1
+  isWeapon: 1
+  useType: 1
+  useTime: 10
+  damage: 2
+  hitboxWidth: 3
+  hitboxHeight: 5
+  projectile: {fileID: 1833550530126203083, guid: 480c2c973a35acc9a92810fc6a429bdd, type: 3}
+  P_MAX_SPEED: 20
+  pdeceleration: 1

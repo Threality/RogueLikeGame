@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInteractionActions
 {
     #region Setup
+    public InventoryManager inventoryManager;
+    public ItemUse itemUse;
+    public PlayerContainer playerContainer;
     void OnEnable()
     {
         // Connect player input and events to script
@@ -41,8 +45,8 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
     {
         // Damage player and prevent damage for a certain amount of time.
         PlayerContainer.instance.health -= context.damage ?? 1;
-        PlayerContainer.instance.immunity  = PlayerContainer.instance.DEFAULT_IMMUNITY;
-        
+        PlayerContainer.instance.immunity = PlayerContainer.instance.DEFAULT_IMMUNITY;
+
         // If the players health is less than or equal to 0 - kill the player
         if (PlayerContainer.instance.health <= 0 && PlayerContainer.instance.playerIsAlive)
         {
@@ -56,17 +60,25 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         // Mark the player as dead
         PlayerContainer.instance.playerIsAlive = false;
         // Clear the inventory
-        PlayerContainer.instance.inventory = new int[9, 5];
+        InventoryManager.instance.inventory = new List<ItemData>();
         // Save the game
         // Generate a new world
     }
-    
+
     #endregion
     #region Inputs
 
     public void OnUseItem(InputAction.CallbackContext context)
     {
-        // Use the item
+        // Only use this function on the initial press
+        if (!context.performed) return;
+
+        // Use the item if the player should be able to
+        if (playerContainer.useCooldown < 0 && inventoryManager.equippedItem != null)
+        {
+            itemUse.UseItem(inventoryManager.equippedItem);
+            playerContainer.useCooldown = inventoryManager.equippedItem.useTime;
+        }
     }
     #endregion
 }

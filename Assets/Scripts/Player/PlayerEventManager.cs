@@ -38,7 +38,7 @@ public static class PlayerEventManager
 
     public static void TriggerEvent(Events curEvent, PlayerContext context)
     {
-        Debug.Log("Triggering player event");
+        // Debug.Log("Triggering player event");
         switch (curEvent)
         {
             case Events.PlayerHit:

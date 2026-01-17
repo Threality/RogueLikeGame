@@ -15,8 +15,8 @@ MonoBehaviour:
   enemyName: BigBat
   prefab: {fileID: 3330753183850994660, guid: e9651c1161d3e686b9ee3849232d7d92, type: 3}
   GraphicsPrefab: {fileID: 8534300588913172881, guid: 6515ca0f23b1e95fbbf96aa83447db01, type: 3}
-  moveSpeed: 1.2322143
-  acceleration: 0.5343418
+  moveSpeed: 3
+  acceleration: 2
   damage: 1
   MAX_HEALTH: 3
   spawnWeight: 10

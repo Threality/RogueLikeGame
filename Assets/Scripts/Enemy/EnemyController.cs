@@ -1,5 +1,6 @@
 using UnityEngine;
 using Pathfinding;
+using UnityEditor.Rendering;
 
 public class EnemyController : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class EnemyController : MonoBehaviour
     private AIPath aIPath;
     private AIDestinationSetter aIDestinationSetter;
     private Transform playerTarget;
-    private Transform curTarget;
+    private GameObject curTarget;
 
     // Movement variables
     [Header("Movement")]
@@ -21,30 +22,19 @@ public class EnemyController : MonoBehaviour
     private int roamTick;
     private bool recentlySeenPlayer;
     private Transform lastSeenLocation;
-    public enum MovementMode
-    {
-        Chase,
-        Search,
-        Roam,
-    }
-    public MovementMode curMode;
+    public EnemyManager.MovementMode curMode;
 
-    // Mask references for raycasts
-    [Header("Mask References")]
+    // References
+    [Header("References")]
     public LayerMask obstacleMask;
     public LayerMask playerMask;
-
+    public EnemyManager enemyManager;
 
     private void Awake()
     {
         // Get references
         aIPath = GetComponent<AIPath>();
         aIDestinationSetter = GetComponent<AIDestinationSetter>();
-
-        // Generate a transform to enable setting custom targets later
-        GameObject temp = new GameObject("Enemy Path Target");
-        temp.transform.SetParent(transform);
-        curTarget = temp.transform;
     }
 
 
@@ -52,12 +42,13 @@ public class EnemyController : MonoBehaviour
     #region Initialisation
 
 
-    public void Initialise(EnemyData enemyData)
+    public void Initialise(EnemyData enemyData, EnemyManager manager)
     {
         // Save data to enemy
-        data = enemyData;
+        data = Instantiate(enemyData);
+        enemyManager = manager;
 
-        // SStore values with random variation
+        // Store values with random variation
         data.moveSpeed *= Random.Range(0.9f, 1.1f);
         data.acceleration *= Random.Range(0.8f, 1.2f);
         Instantiate(data.GraphicsPrefab, transform);
@@ -66,12 +57,22 @@ public class EnemyController : MonoBehaviour
         playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
         
         // Put into roaming mode
-        curMode = MovementMode.Roam;
+        curMode = EnemyManager.MovementMode.Roam;
         aIPath.maxSpeed = data.moveSpeed * 0.33f;
         aIPath.maxAcceleration = data.acceleration * 0.33f;
 
         // Set sizing
         transform.localScale = new Vector3(data.width, data.height, transform.localScale.z);
+        gameObject.GetComponent<BoxCollider2D>().size = new Vector3(data.width * 0.8f, data.height * 0.8f, transform.localScale.z);
+        gameObject.GetComponent<BoxCollider2D>().size = new Vector3(data.width * 1.1f, data.height * 1.1f, transform.localScale.z);
+
+        // Set up other instance stats
+        gameObject.GetComponent<EnemyInteraction>().Initialise(data, enemyManager);
+
+        // Generate a transform to enable setting custom targets later
+        GameObject temp = new GameObject("Enemy Path Target");
+        temp.transform.SetParent(enemyManager.targetContainer);
+        curTarget = temp;
     }
 
 
@@ -92,18 +93,18 @@ public class EnemyController : MonoBehaviour
             // Enemy can see the player so mark the location
             recentlySeenPlayer = true;
             lastSeenLocation = playerTarget.transform;
-            curMode = MovementMode.Chase;
+            curMode = EnemyManager.MovementMode.Chase;
         }
         else if (recentlySeenPlayer)
         {
             // If the player cannot currently see the player but has seen them recently
             // Go into search mode
-            curMode = MovementMode.Search;
+            curMode = EnemyManager.MovementMode.Search;
 
             // Randomly forget the players location and move to roaming
             if (Random.value <= FORGET_CHANCE)
             {
-                curMode = MovementMode.Roam;
+                curMode = EnemyManager.MovementMode.Roam;
                 recentlySeenPlayer = false;
             }
 
@@ -111,7 +112,7 @@ public class EnemyController : MonoBehaviour
         else
         {
             // If the player has not been seen recently roam
-            curMode = MovementMode.Roam;
+            curMode = EnemyManager.MovementMode.Roam;
         }
 
         // Apply the movement mode
@@ -123,19 +124,19 @@ public class EnemyController : MonoBehaviour
         switch (curMode)
         {
             // When chasing the enemy moves at full speed towards player
-            case MovementMode.Chase:
+            case EnemyManager.MovementMode.Chase:
                 aIDestinationSetter.target = playerTarget.transform;
                 aIPath.maxSpeed = data.moveSpeed;
                 aIPath.maxAcceleration = data.acceleration;
                 break;
             // When searching the enemy moves slightly slower towards the players last known location
-            case MovementMode.Search:
+            case EnemyManager.MovementMode.Search:
                 aIDestinationSetter.target = lastSeenLocation;
-                aIPath.maxSpeed = data.moveSpeed * 0.75f;
-                aIPath.maxAcceleration = data.acceleration * 0.75f;
+                aIPath.maxSpeed = data.moveSpeed;
+                aIPath.maxAcceleration = data.acceleration;
                 break;
             // When roaming the enemy moves slowly and randomly
-            case MovementMode.Roam:
+            case EnemyManager.MovementMode.Roam:
                 // Uses a roam tick value to make adjusting the target less frequent
                 if (roamTick % roamDestChangeFrequency == 0)
                 {
@@ -146,8 +147,8 @@ public class EnemyController : MonoBehaviour
                     randY *= Random.value < 0.5f ? 1 : -1;
 
                     // Set the target to these randomly selected nearby coords
-                    curTarget.position = new Vector2(transform.position.x + randX, transform.position.y + randY);
-                    aIDestinationSetter.target = curTarget;
+                    curTarget.transform.position = new Vector2(transform.position.x + randX, transform.position.y + randY);
+                    aIDestinationSetter.target = curTarget.transform;
                     aIPath.maxSpeed = data.moveSpeed * 0.33f;
                     aIPath.maxAcceleration = data.acceleration * 0.33f;
                 }
@@ -180,6 +181,15 @@ public class EnemyController : MonoBehaviour
 
         // If it hits the player return true else false
         return hit.collider.CompareTag("Player");
+    }
+
+
+    #endregion
+    #region Remove
+
+    public void RemoveTarget()
+    {
+        Destroy(curTarget);
     }
 
     #endregion

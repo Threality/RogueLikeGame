@@ -19,8 +19,14 @@ public class ItemData : ScriptableObject
     [Header("Stats")]
     public bool isUsable;
     public bool isWeapon;
+    public GameManager.UseType useType;
+    public int useTime;
     public int damage;
     public float hitboxWidth;
     public float hitboxHeight;
+
+    [Header("Projectile")]
     public GameObject projectile;
+    public float P_MAX_SPEED;
+    public float pdeceleration;
 }

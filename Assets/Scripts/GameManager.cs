@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -25,6 +26,13 @@ public class GameManager : MonoBehaviour
         Epic,
         Legendary,
         Mythical
+    }
+    
+    public enum UseType
+    {
+        None,
+        Sword,
+        Gun,
     }
 
     private void Awake()
@@ -65,5 +73,14 @@ public class GameManager : MonoBehaviour
 
         // Use pythagoras to calculate distance
         return Mathf.Sqrt(x * x + y * y);
+    }
+
+    public Vector2 GetMouseDirection()
+    {
+        Vector2 mouseScreenLocation = Mouse.current.position.ReadValue();
+        Vector3 mouseWorldLocation = Camera.main.ScreenToWorldPoint(mouseScreenLocation);
+
+        Vector2 direction = mouseWorldLocation - player.transform.position;
+        return direction.normalized;
     }
 }

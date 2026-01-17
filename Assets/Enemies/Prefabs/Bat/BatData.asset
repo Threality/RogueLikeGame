@@ -15,8 +15,8 @@ MonoBehaviour:
   enemyName: Bat
   prefab: {fileID: 3330753183850994660, guid: e9651c1161d3e686b9ee3849232d7d92, type: 3}
   GraphicsPrefab: {fileID: 8534300588913172881, guid: 748a99c176831672596c2087199eb749, type: 3}
-  moveSpeed: 3.9417272
-  acceleration: 0.8183001
+  moveSpeed: 6
+  acceleration: 3
   damage: 1
   MAX_HEALTH: 3
   spawnWeight: 20

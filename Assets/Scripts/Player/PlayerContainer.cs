@@ -11,8 +11,8 @@ public class PlayerContainer : MonoBehaviour
     // Player stats
     public int health;
     public int immunity;
-    public int[,] inventory = new int[9, 5];
     public bool playerIsAlive;
+    public int useCooldown;
 
     private void Awake()
     {
@@ -24,11 +24,13 @@ public class PlayerContainer : MonoBehaviour
         health = MAX_HEALTH;
         immunity = DEFAULT_IMMUNITY;
         playerIsAlive = true;
+        useCooldown = -1;
     }
-    
+
     private void FixedUpdate()
     {
         // Constantly reduce immunity frames
         immunity = immunity < 0 ? immunity : immunity - 1;
+        useCooldown = useCooldown < 0 ? useCooldown : useCooldown - 1;
     }
 }

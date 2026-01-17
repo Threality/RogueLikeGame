@@ -27,9 +27,13 @@ public class InventoryDebugger : Editor
 
         DrawDefaultInspector();
 
-        if(GUILayout.Button("Add item"))
+        if(GUILayout.Button("Add Item"))
         {
             InventoryManager.instance.Add(InventoryManager.instance.defaultItem);
+        }
+        if(GUILayout.Button("Remove Item"))
+        {
+            InventoryManager.instance.Remove(InventoryManager.instance.defaultItem);
         }
     }
 }

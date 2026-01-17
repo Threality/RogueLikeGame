@@ -6,6 +6,7 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
 {
     #region Setup
 
+    // Create an instance of the inventory
     public static InventoryManager instance;
 
     // Store inventory data
@@ -14,6 +15,7 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
     private InventorySlot[] slots;
     public int space = 20;
     public bool inventoryDoesPause;
+    public ItemData equippedItem;
 
     // References for the UI
     [Header("References")]
@@ -23,6 +25,9 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
     // Default item for debugging
     public ItemData defaultItem;
     public InformationDisplayer informationDisplayer;
+    public Color defaultColor;
+    public Color equippedColor;
+
 
     void OnEnable()
     {
@@ -56,6 +61,7 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
             InventorySlot slot = obj.GetComponent<InventorySlot>();
             slot.slotNum = i;
             slot.informationDisplayer = informationDisplayer;
+            slot.inventoryManager = this;
         }
 
         slots = inventoryParent.GetComponentsInChildren<InventorySlot>();
@@ -96,6 +102,20 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
         UpdateUI();
     }
 
+    public void EquipItem(int itemNum)
+    {
+        // Store a reference to the data
+        equippedItem = slots[itemNum].data;
+
+        // Update visuals for the player
+        foreach (InventorySlot slot in slots)
+        {
+            if (slot.slotNum == itemNum) slot.SetColor(equippedColor);
+            else slot.SetColor(defaultColor);
+        }
+    }
+
+
     #endregion
     #region UI
 
@@ -104,14 +124,8 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
         // Update all slots
         for (int i = 0; i < space; i++)
         {
-            if (i < inventory.Count)
-            {
-                slots[i].Add(inventory[i]);
-            }
-            else
-            {
-                slots[i].Clear();
-            }
+            if (i < inventory.Count) slots[i].Add(inventory[i]);
+            else slots[i].Clear();
         }
     }
 

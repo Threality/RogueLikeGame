@@ -25,16 +25,22 @@ public class EnemyManager : MonoBehaviour
         GroundMelee,
         FlyingMelee
     }
+    public enum MovementMode
+    {
+        Chase,
+        Search,
+        Roam,
+    }
 
     // References
     [Header("References")]
     public GameManager gameManager;
     public GameObject enemiesContainer;
     public GameObject player;
+    public Transform targetContainer;
 
     // Tracking enemy related variables
     [Header("Current Values")]
-    public int enemyCount = 0;
     public List<GameObject> enemyInstances;
 
 
@@ -62,10 +68,14 @@ public class EnemyManager : MonoBehaviour
         Vector2 spawnLocation = GetRandomSpawnLocation();
         if (spawnLocation == new Vector2()) return;
 
-        if (enemyCount >= MAX_ENEMIES)
+        if (enemyInstances.Count >= MAX_ENEMIES)
         {
             if (!AttemptToRemoveEnemy()) return;
         }
+
+        // Ensures the number of enemies is below maximum 
+        // even if removing an enemy was successful
+        if (enemyInstances.Count >= MAX_ENEMIES) return;
 
         // Attempt to spawn enemy
         SpawnEnemy(spawnLocation);
@@ -88,10 +98,9 @@ public class EnemyManager : MonoBehaviour
 
         // Initialise the data
         EnemyController controller = enemyObj.GetComponent<EnemyController>();
-        if(controller != null) controller.Initialise(enemyToSpawn);
+        if(controller != null) controller.Initialise(enemyToSpawn, this);
 
         // Store information
-        enemyCount++;
         enemyInstances.Add(enemyObj);
 
         // Create context for the event
@@ -163,7 +172,7 @@ public class EnemyManager : MonoBehaviour
         }
 
         // Return a default value
-        Debug.Log("Failed to find weighted enemy");
+        Debug.LogWarning("Failed to find weighted enemy");
         return enemies[0];
     }
 
@@ -172,16 +181,12 @@ public class EnemyManager : MonoBehaviour
         // Check a maximum of 30 times to prevent loops
         for (int i = 0; i < 30; i++)
         {
-            // Generate random coords
-            float randX = Random.Range(MAX_PLAYER_VISION_X, MAX_PLAYER_VISION_X * 1.5f);
-            float randY = Random.Range(MAX_PLAYER_VISION_Y, MAX_PLAYER_VISION_Y * 1.5f);
-
-            // Adjust the coords so they are random in either direction
-            randX *= Random.value < 0.5f ? 1 : -1;
-            randX *= Random.value < 0.5f ? 1 : -1;
+            // Generate random direction and distance
+            Vector2 direction = Random.insideUnitCircle.normalized;
+            float distance = Random.Range(MAX_PLAYER_VISION_X, MAX_PLAYER_VISION_X * 1.5f);
 
             // Create position vector using random values
-            Vector2 position = new Vector2(player.transform.position.x + randX, player.transform.position.y + randY);
+            Vector2 position = (Vector2) player.transform.position + direction * distance;
 
             // Check the position is near a node on the navigation path
             NNInfo nearestNode = AstarPath.active.GetNearest((Vector3) position, NNConstraint.Default);
@@ -206,7 +211,7 @@ public class EnemyManager : MonoBehaviour
         // Return early if no enemies qualify
         if (validInstances.Count ==  0) return false;
 
-        Debug.Log("Removing enemy");
+        // Debug.Log("Removing enemy");
         // Sort them by rarity, common first
         validInstances.Sort((a, b) =>
             a.GetComponent<EnemyController>().data.rarity
@@ -214,11 +219,16 @@ public class EnemyManager : MonoBehaviour
 
 
         // Remove the enemy from the list then delete it
-        enemyInstances.Remove(validInstances[0]);
-        Destroy(validInstances[0]);
-        enemyCount--;
+        RemoveEnemy(validInstances[0]);
         
         return true;
+    }
+
+    public void RemoveEnemy(GameObject enemy)
+    {
+        enemyInstances.Remove(enemy);
+        enemy.GetComponent<EnemyController>().RemoveTarget();
+        Destroy(enemy);
     }
 
     public List<GameObject> GetEnemiesOffScreen()
