@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
     // Allow for editing variables in the inspector
     [Header("Base Movement Settings")]
     public float MAX_SPEED;
+    public float MAX_DOWNWARD_SPEED;
     public float ACCELERATION;
     public float DECELERATION;
 
@@ -56,6 +57,12 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
         {
             // If player input - Move
             rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, MAX_SPEED * movementInput, ACCELERATION * Time.deltaTime);
+        }
+
+        if (rb.linearVelocityY < -1 * MAX_DOWNWARD_SPEED)
+        {
+            //If above speed cap - Reduce speed
+            rb.linearVelocityY = Mathf.Lerp(rb.linearVelocityY, -1 * MAX_DOWNWARD_SPEED, DECELERATION * Time.deltaTime);
         }
     }
 
