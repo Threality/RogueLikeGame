@@ -93,7 +93,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             ""id"": ""df70fa95-8a34-4494-b137-73ab6b9c7d37"",
             ""actions"": [
                 {
-                    ""name"": ""Move"",
+                    ""name"": ""HorizontalMove"",
                     ""type"": ""Value"",
                     ""id"": ""351f2ccd-1f9f-44bf-9bec-d62ac5c5f408"",
                     ""expectedControlType"": ""Axis"",
@@ -109,6 +109,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""VerticalMove"",
+                    ""type"": ""Value"",
+                    ""id"": ""4d89a811-35da-4da2-960e-2163b39affe2"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -119,7 +128,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""HorizontalMove"",
                     ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
@@ -130,7 +139,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""HorizontalMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -141,7 +150,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Move"",
+                    ""action"": ""HorizontalMove"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
                 },
@@ -177,6 +186,39 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""Keyboard"",
+                    ""id"": ""c59ff009-67cd-4369-a8da-53f693537072"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VerticalMove"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""7b5a50d7-f0f1-4d99-be00-f0dffe8472fb"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VerticalMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""bdaa305b-a202-4491-9b12-d293c6321b1b"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VerticalMove"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 }
             ]
         },
@@ -708,6 +750,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlaceLadder"",
+                    ""type"": ""Button"",
+                    ""id"": ""2f538e04-198d-42c0-bb2e-1dcee60e41ae"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -719,6 +770,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""UseItem"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""70328bb5-dacd-41da-a103-496a5e912640"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceLadder"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -818,8 +880,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
 }");
         // PlayerMovement
         m_PlayerMovement = asset.FindActionMap("PlayerMovement", throwIfNotFound: true);
-        m_PlayerMovement_Move = m_PlayerMovement.FindAction("Move", throwIfNotFound: true);
+        m_PlayerMovement_HorizontalMove = m_PlayerMovement.FindAction("HorizontalMove", throwIfNotFound: true);
         m_PlayerMovement_Jump = m_PlayerMovement.FindAction("Jump", throwIfNotFound: true);
+        m_PlayerMovement_VerticalMove = m_PlayerMovement.FindAction("VerticalMove", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -835,6 +898,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         // PlayerInteraction
         m_PlayerInteraction = asset.FindActionMap("PlayerInteraction", throwIfNotFound: true);
         m_PlayerInteraction_UseItem = m_PlayerInteraction.FindAction("UseItem", throwIfNotFound: true);
+        m_PlayerInteraction_PlaceLadder = m_PlayerInteraction.FindAction("PlaceLadder", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_OpenInventory = m_Inventory.FindAction("OpenInventory", throwIfNotFound: true);
@@ -921,8 +985,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     // PlayerMovement
     private readonly InputActionMap m_PlayerMovement;
     private List<IPlayerMovementActions> m_PlayerMovementActionsCallbackInterfaces = new List<IPlayerMovementActions>();
-    private readonly InputAction m_PlayerMovement_Move;
+    private readonly InputAction m_PlayerMovement_HorizontalMove;
     private readonly InputAction m_PlayerMovement_Jump;
+    private readonly InputAction m_PlayerMovement_VerticalMove;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerMovement".
     /// </summary>
@@ -935,13 +1000,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// </summary>
         public PlayerMovementActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "PlayerMovement/Move".
+        /// Provides access to the underlying input action "PlayerMovement/HorizontalMove".
         /// </summary>
-        public InputAction @Move => m_Wrapper.m_PlayerMovement_Move;
+        public InputAction @HorizontalMove => m_Wrapper.m_PlayerMovement_HorizontalMove;
         /// <summary>
         /// Provides access to the underlying input action "PlayerMovement/Jump".
         /// </summary>
         public InputAction @Jump => m_Wrapper.m_PlayerMovement_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerMovement/VerticalMove".
+        /// </summary>
+        public InputAction @VerticalMove => m_Wrapper.m_PlayerMovement_VerticalMove;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -968,12 +1037,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_PlayerMovementActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_PlayerMovementActionsCallbackInterfaces.Add(instance);
-            @Move.started += instance.OnMove;
-            @Move.performed += instance.OnMove;
-            @Move.canceled += instance.OnMove;
+            @HorizontalMove.started += instance.OnHorizontalMove;
+            @HorizontalMove.performed += instance.OnHorizontalMove;
+            @HorizontalMove.canceled += instance.OnHorizontalMove;
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @VerticalMove.started += instance.OnVerticalMove;
+            @VerticalMove.performed += instance.OnVerticalMove;
+            @VerticalMove.canceled += instance.OnVerticalMove;
         }
 
         /// <summary>
@@ -985,12 +1057,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="PlayerMovementActions" />
         private void UnregisterCallbacks(IPlayerMovementActions instance)
         {
-            @Move.started -= instance.OnMove;
-            @Move.performed -= instance.OnMove;
-            @Move.canceled -= instance.OnMove;
+            @HorizontalMove.started -= instance.OnHorizontalMove;
+            @HorizontalMove.performed -= instance.OnHorizontalMove;
+            @HorizontalMove.canceled -= instance.OnHorizontalMove;
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @VerticalMove.started -= instance.OnVerticalMove;
+            @VerticalMove.performed -= instance.OnVerticalMove;
+            @VerticalMove.canceled -= instance.OnVerticalMove;
         }
 
         /// <summary>
@@ -1224,6 +1299,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_PlayerInteraction;
     private List<IPlayerInteractionActions> m_PlayerInteractionActionsCallbackInterfaces = new List<IPlayerInteractionActions>();
     private readonly InputAction m_PlayerInteraction_UseItem;
+    private readonly InputAction m_PlayerInteraction_PlaceLadder;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerInteraction".
     /// </summary>
@@ -1239,6 +1315,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerInteraction/UseItem".
         /// </summary>
         public InputAction @UseItem => m_Wrapper.m_PlayerInteraction_UseItem;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerInteraction/PlaceLadder".
+        /// </summary>
+        public InputAction @PlaceLadder => m_Wrapper.m_PlayerInteraction_PlaceLadder;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1268,6 +1348,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @UseItem.started += instance.OnUseItem;
             @UseItem.performed += instance.OnUseItem;
             @UseItem.canceled += instance.OnUseItem;
+            @PlaceLadder.started += instance.OnPlaceLadder;
+            @PlaceLadder.performed += instance.OnPlaceLadder;
+            @PlaceLadder.canceled += instance.OnPlaceLadder;
         }
 
         /// <summary>
@@ -1282,6 +1365,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @UseItem.started -= instance.OnUseItem;
             @UseItem.performed -= instance.OnUseItem;
             @UseItem.canceled -= instance.OnUseItem;
+            @PlaceLadder.started -= instance.OnPlaceLadder;
+            @PlaceLadder.performed -= instance.OnPlaceLadder;
+            @PlaceLadder.canceled -= instance.OnPlaceLadder;
         }
 
         /// <summary>
@@ -1484,12 +1570,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     public interface IPlayerMovementActions
     {
         /// <summary>
-        /// Method invoked when associated input action "Move" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "HorizontalMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnMove(InputAction.CallbackContext context);
+        void OnHorizontalMove(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Jump" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
@@ -1497,6 +1583,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "VerticalMove" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnVerticalMove(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
@@ -1590,6 +1683,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnUseItem(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "PlaceLadder" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnPlaceLadder(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Inventory" which allows adding and removing callbacks.

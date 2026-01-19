@@ -1,6 +1,11 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Pathfinding;
 using System.Collections.Generic;
+using UnityEditor.Tilemaps;
+using System.Linq;
+using System.CodeDom.Compiler;
+using Unity.Collections;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -8,12 +13,14 @@ public class WorldGenerator : MonoBehaviour
 
     [Header("References")]
     public Tilemap tilemap;
+    public Tilemap ladderMap;
+    public TilemapCollider2D tilemapCollider2D;
+    public TilesetOrganiser tilesetOrganiser;
     public TileBase grassTile;
     public TileBase dirtTile;
     public TileBase stoneTile;
     public TileBase sandTile;
     public TileBase lightRockTile;
-    public TilesetOrganiser tilesetOrganiser;
 
     [Header("Generation Settings")]
     public int worldWidth = 256;
@@ -24,7 +31,9 @@ public class WorldGenerator : MonoBehaviour
 
     [Header("Surface Generation")]
     public int baseHeight = 60;
+    public float initialSurfaceScale = 0.02f;
     public float surfaceScale = 0.05f;
+    public float initialHeightMultiplier = 20f;
     public float heightMultiplier = 15f;
 
     [Header("Biomes")]
@@ -32,6 +41,7 @@ public class WorldGenerator : MonoBehaviour
     public Biome[] biomes;
 
     [Header("Worm Caves")]
+    public bool generateWormCaves = true;
     public int numberOfCaves = 6;
     public int caveLength = 100;
     public int caveWidth = 3;
@@ -45,6 +55,20 @@ public class WorldGenerator : MonoBehaviour
     public float isolatedCaveSize = 0.05f;
     [Range(0f, 1f)] public float isolatedCaveThreshold = 0.65f;
     public int minDistanceFromSurface = 15;
+
+    [Header("Blackout")]
+    public Tilemap blackout;
+    public Tilemap backgroundBlackout;
+    public bool generateBlackout = true;
+    public bool generateBackgroundBlackout = true;
+    public TileBase blackoutTile;
+
+    [Header("Background")]
+    public Tilemap background;
+    public bool generateBackground = true;
+
+    [Header("Enemies")]
+    public bool generateEnemyMap = true;
 
     // Data
     public int[] surfaceHeightCache;
@@ -73,17 +97,44 @@ public class WorldGenerator : MonoBehaviour
 
     public void GenerateWorld()
     {
+        GenerateInitialHeightMap();
         GenerateInitialTerrain();
         GenerateWormCaves();
         if (generateIsolatedCaves) GenerateIsolatedCaves();
-        tilesetOrganiser.ProcessMap();
+        tilesetOrganiser.ProcessMap(tilemap);
+        if (generateBackground)
+        {
+            GenerateBackground();
+            tilesetOrganiser.ProcessMap(background);
+        } 
+        if (generateBlackout) 
+        {
+            GenerateBlackout();
+            GenerateBackgroundBlackout();
+        }
+        if (generateEnemyMap) SetupEnemyGrid();
+        ladderMap.ClearAllTiles();
+        ladderMap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
     }
 
+    private void GenerateInitialHeightMap()
+    {
+        surfaceHeightCache = new int[worldWidth];
+
+        for (int x = 0; x < worldWidth; x++)
+        {
+            float heightNoise = Mathf.PerlinNoise((x + seed + 1000) * initialSurfaceScale, seed + 1000);
+            int ySurface = baseHeight + Mathf.RoundToInt(heightNoise * initialHeightMultiplier);
+
+            surfaceHeightCache[x] = ySurface;
+        }
+    }
+
+    
     private void GenerateInitialTerrain()
     {
         // Get the tilemap ready for editing
         tilemap.ClearAllTiles();
-        surfaceHeightCache = new int[worldWidth];
         temperatureCache = new float[worldWidth];
         tilemap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
 
@@ -92,7 +143,7 @@ public class WorldGenerator : MonoBehaviour
         {
             // Get a value for height using perlin noise
             float heightNoise = Mathf.PerlinNoise((x + seed) * surfaceScale, seed);
-            int ySurface = baseHeight + Mathf.RoundToInt(heightNoise * heightMultiplier);
+            int ySurface = surfaceHeightCache[x] + Mathf.RoundToInt(heightNoise * heightMultiplier);
 
             // Save the height value
             surfaceHeightCache[x] = ySurface;
@@ -231,6 +282,82 @@ public class WorldGenerator : MonoBehaviour
                     // Destroy the tile
                     tilemap.SetTile(new Vector3Int(x, y, 0), null);
                 }
+            }
+        }
+    }
+
+
+    #endregion
+    #region Enemies
+
+
+    private void SetupEnemyGrid()
+    {
+        GridGraph graph = AstarPath.active.graphs.OfType<GridGraph>().First();
+        graph.SetDimensions(worldWidth, worldHeight, 1f);
+
+        tilemapCollider2D.compositeOperation = Collider2D.CompositeOperation.None;
+
+        tilemapCollider2D.enabled = false;
+        tilemapCollider2D.enabled = true;
+        Physics2D.SyncTransforms();
+
+        graph.Scan();
+
+        tilemapCollider2D.compositeOperation = Collider2D.CompositeOperation.Merge;
+
+        tilemapCollider2D.enabled = false;
+        tilemapCollider2D.enabled = true;
+    }
+
+
+    #endregion
+    #region Decoration
+
+
+    private void GenerateBlackout()
+    {
+        blackout.ClearAllTiles();
+        blackout.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
+
+        for (int x = 0; x < worldWidth; x++)
+        {
+            int surfaceHeight = surfaceHeightCache[x];
+            for (int y = 0; y < surfaceHeight; y++)
+            {
+                if (tilemap.HasTile(new Vector3Int(x, y, 0)))
+                {
+                    blackout.SetTile(new Vector3Int(x, y, 0), blackoutTile);
+                }
+            }
+        }
+    }
+
+    private void GenerateBackgroundBlackout()
+    {
+        backgroundBlackout.ClearAllTiles();
+        backgroundBlackout.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
+
+        for (int x = 0; x < worldWidth; x++)
+        {
+            int surfaceHeight = surfaceHeightCache[x];
+            for (int y = 0; y < surfaceHeight; y++)
+            {
+                backgroundBlackout.SetTile(new Vector3Int(x, y, 0), blackoutTile);
+            }
+        }
+    }
+
+    private void GenerateBackground()
+    {
+        background.ClearAllTiles();
+        background.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
+        for (int x = 0; x < worldWidth; x++)
+        {
+            int surfaceHeight = surfaceHeightCache[x];
+            for (int y = 0; y < surfaceHeight; y++)
+            {
+                background.SetTile(new Vector3Int(x, y, 0), lightRockTile);
             }
         }
     }

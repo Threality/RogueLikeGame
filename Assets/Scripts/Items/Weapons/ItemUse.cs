@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Tilemaps;
 
 public class ItemUse : MonoBehaviour
 {
@@ -8,6 +10,11 @@ public class ItemUse : MonoBehaviour
     public InventoryManager inventoryManager;
     public LayerMask enemyLayer;
     public Transform projectileParent;
+
+    [Header("Ladders")]
+    public Tilemap ladderMap;
+    public Tilemap groundMap;
+    public TileBase ladderTile;
 
     // Debugging variables
     private Vector2 lastCenter;
@@ -35,6 +42,22 @@ public class ItemUse : MonoBehaviour
                 Debug.LogWarning("Attempted to use item but did not provide data");
                 break;
         }
+    }
+
+    public void UseLadder()
+    {
+        Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
+
+        float distance = Vector2.Distance(transform.position, mousePos);
+        if (distance > 10f) return;
+
+        Vector3Int cellPos = ladderMap.WorldToCell(mousePos);
+
+        if (ladderMap.HasTile(cellPos)) return;
+        if (groundMap.HasTile(cellPos)) return;
+
+        ladderMap.SetTile(cellPos, ladderTile);
     }
 
 

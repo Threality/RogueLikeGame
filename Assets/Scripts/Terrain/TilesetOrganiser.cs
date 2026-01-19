@@ -9,8 +9,8 @@ using Unity.Collections;
 public class TilesetOrganiser : MonoBehaviour
 {
     [Header("References")]
-    public Tilemap groundMap;
     public WorldGenerator worldGenerator;
+    private Tilemap curMap;
 
     [System.Serializable]
     public class BlockSet
@@ -27,10 +27,11 @@ public class TilesetOrganiser : MonoBehaviour
     private bool[,] visited;
     private BoundsInt bounds;
 
-    public void ProcessMap()
+    public void ProcessMap(Tilemap tilemap)
     {
-        groundMap.CompressBounds();
-        bounds = groundMap.cellBounds;
+        curMap = tilemap;
+        curMap.CompressBounds();
+        bounds = curMap.cellBounds;
         visited = new bool[bounds.size.x, bounds.size.y];
 
         List<Vector3Int> allGroundTiles = new List<Vector3Int>();
@@ -39,7 +40,7 @@ public class TilesetOrganiser : MonoBehaviour
         {
             for (int y = bounds.yMin; y < bounds.yMax; y++)
             {
-                if (groundMap.HasTile(new Vector3Int(x, y, 0)))
+                if (curMap.HasTile(new Vector3Int(x, y, 0)))
                 {
                     allGroundTiles.Add(new Vector3Int(x, y, 0));
                 }
@@ -59,7 +60,7 @@ public class TilesetOrganiser : MonoBehaviour
 
             if (pos.y == surfaceHeight || pos.y == surfaceHeight - surfaceRndOffset)
             {
-                groundMap.SetTile(pos, currentBiome.surfaceTile);
+                curMap.SetTile(pos, currentBiome.surfaceTile);
                 MarkVisited(pos);
             }
             else
@@ -77,7 +78,7 @@ public class TilesetOrganiser : MonoBehaviour
                 }
                 else
                 {
-                    groundMap.SetTile(pos, selectedMaterial.tile1x1);
+                    curMap.SetTile(pos, selectedMaterial.tile1x1);
                     MarkVisited(pos);
                 }
             }
@@ -93,7 +94,7 @@ public class TilesetOrganiser : MonoBehaviour
             {
                 Vector3Int checkPos = startPos + new Vector3Int(x, y, 0);
 
-                if (!groundMap.HasTile(checkPos)) return false;
+                if (!curMap.HasTile(checkPos)) return false;
                 if (IsVisited(checkPos)) return false;
                 if (checkPos.y >= worldGenerator.surfaceHeightCache[checkPos.x] - surfaceOffset - 1) return false;
             }
@@ -113,7 +114,7 @@ public class TilesetOrganiser : MonoBehaviour
 
                 if (i < tiles.Length)
                 {
-                    groundMap.SetTile(currentPos, tiles[i]);
+                    curMap.SetTile(currentPos, tiles[i]);
                 }
 
                 MarkVisited(currentPos);

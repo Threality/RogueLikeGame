@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using UnityEditor.Rendering.LookDev;
 
 public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInteractionActions
 {
@@ -79,6 +80,13 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
             itemUse.UseItem(inventoryManager.equippedItem);
             playerContainer.useCooldown = inventoryManager.equippedItem.useTime;
         }
+    }
+
+    public void OnPlaceLadder(InputAction.CallbackContext context)
+    {
+        if (!context.performed) return;
+
+        itemUse.UseLadder();
     }
     #endregion
 }
