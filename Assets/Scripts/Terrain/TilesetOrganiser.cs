@@ -8,8 +8,12 @@ using Unity.Collections;
 
 public class TilesetOrganiser : MonoBehaviour
 {
+    #region Setup
+
     [Header("References")]
     public WorldGenerator worldGenerator;
+
+    // Data
     private Tilemap curMap;
 
     [System.Serializable]
@@ -26,6 +30,11 @@ public class TilesetOrganiser : MonoBehaviour
     // Track visited
     private bool[,] visited;
     private BoundsInt bounds;
+
+    
+    #endregion
+    #region Process
+
 
     public void ProcessMap(Tilemap tilemap)
     {
@@ -85,6 +94,11 @@ public class TilesetOrganiser : MonoBehaviour
 
         }
     }
+
+    
+    #endregion
+    #region Utility
+
 
     private bool CanFit(Vector3Int startPos, int size, int surfaceOffset)
     {
@@ -162,4 +176,6 @@ public class TilesetOrganiser : MonoBehaviour
         int arrayY = pos.y - bounds.yMin;
         visited[arrayX, arrayY] = true;
     }
+    
+    #endregion
 }

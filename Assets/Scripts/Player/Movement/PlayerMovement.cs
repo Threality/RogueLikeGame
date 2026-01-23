@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     [Header("Colliders")]
     [SerializeField] private GroundCheck groundCheck;
+    [SerializeField] private LadderCheck ladderCheck;
 
     // Set up hidden values 
     private float coyoteTime = 0;
@@ -29,7 +30,6 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
     private float horizontalInput;
     private float verticalInput;
     private bool isClimbing;
-    private bool isTouchingLadder;
     private float defaultGravity;
 
     void OnEnable()
@@ -60,13 +60,19 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
         // Check grounded state
         coyoteTime = groundCheck.IsGrounded() ? DEFAULT_COYOTE : coyoteTime;
 
-        if (isTouchingLadder && Mathf.Abs(verticalInput) > 0.1f) isClimbing = true;
+        // Check if the player is trying to climb a ladder
+        if (ladderCheck.IsTouchingLadder() && Mathf.Abs(verticalInput) > 0.1f) isClimbing = true;
+        if (!ladderCheck.IsTouchingLadder()) isClimbing = false;
 
+        // Enter the climbing state
         if (isClimbing)
         {
             rb.gravityScale = 0f;
-            rb.linearVelocity = new Vector2(rb.linearVelocityX, verticalInput * climbSpeed);
-            return;
+            rb.linearVelocity = new Vector2(0f, verticalInput * climbSpeed);
+        }
+        else
+        {
+            rb.gravityScale = defaultGravity;
         }
 
         // Move the player
@@ -96,30 +102,8 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
 
     #endregion
-    #region Climb Detection
-
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (((1 << collision.gameObject.layer) & ladderLayer) != 0)
-        {
-            isTouchingLadder = true;
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        if (((1 << collision.gameObject.layer) & ladderLayer) != 0)
-        {
-            isTouchingLadder = false;
-            isClimbing = false;
-            rb.gravityScale = defaultGravity;
-        }
-    }
-
-
-    #endregion
     #region Input
+
 
     public void OnHorizontalMove(InputAction.CallbackContext context)
     {
@@ -136,7 +120,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
     public void OnJump(InputAction.CallbackContext context)
     {
         // If the player is currently or was recently
-        if (coyoteTime >= 0 || isClimbing)
+        if (coyoteTime >= 0 || ladderCheck.IsTouchingLadder())
         {
             rb.linearVelocityY = DEFAULT_JUMP_FORCE;
             isClimbing = false;

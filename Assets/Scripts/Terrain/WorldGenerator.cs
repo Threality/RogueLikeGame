@@ -71,8 +71,8 @@ public class WorldGenerator : MonoBehaviour
     public bool generateEnemyMap = true;
 
     // Data
-    public int[] surfaceHeightCache;
-    public float[] temperatureCache;
+    [HideInInspector] public int[] surfaceHeightCache;
+    [HideInInspector] public float[] temperatureCache;
 
     [System.Serializable]
     public class Biome
@@ -99,19 +99,16 @@ public class WorldGenerator : MonoBehaviour
     {
         GenerateInitialHeightMap();
         GenerateInitialTerrain();
-        GenerateWormCaves();
+        if (generateWormCaves) GenerateWormCaves();
         if (generateIsolatedCaves) GenerateIsolatedCaves();
         tilesetOrganiser.ProcessMap(tilemap);
         if (generateBackground)
         {
             GenerateBackground();
             tilesetOrganiser.ProcessMap(background);
-        } 
-        if (generateBlackout) 
-        {
-            GenerateBlackout();
-            GenerateBackgroundBlackout();
         }
+        if (generateBlackout) GenerateBlackout();
+        if (generateBackgroundBlackout) GenerateBackgroundBlackout();
         if (generateEnemyMap) SetupEnemyGrid();
         ladderMap.ClearAllTiles();
         ladderMap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
@@ -130,7 +127,7 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    
+
     private void GenerateInitialTerrain()
     {
         // Get the tilemap ready for editing
@@ -189,7 +186,7 @@ public class WorldGenerator : MonoBehaviour
     private void GenerateWormCaves()
     {
         // Add slight randomness to the amount of caves on the world
-        numberOfCaves = (int) Mathf.Floor(worldWidth / Random.Range(100, 150));
+        numberOfCaves = (int)Mathf.Floor(worldWidth / Random.Range(100, 150));
         numberOfCaves = numberOfCaves < 1 ? 1 : numberOfCaves;
 
         // Ensure caves spawn distribute across the world
@@ -211,22 +208,28 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateIsolatedCaves()
     {
+        // Adjust the seed to keep it unique
         float caveSeed = seed + 500;
 
+        // Iterate through each x coord
         for (int x = 2; x < worldWidth - 2; x++)
         {
             int surfaceHeight = surfaceHeightCache[x];
+
+            // Iterate through y coords. Keeps away from surface
             for (int y = 2; y < surfaceHeight - minDistanceFromSurface; y++)
             {
                 float xCoord = (x + caveSeed) * isolatedCaveSize;
                 float yCoord = (y + caveSeed) * isolatedCaveSize;
 
+                // Gets the noise value
                 float noiseValue = Mathf.PerlinNoise(xCoord, yCoord);
 
+                // Destroy or keep tile
                 if (noiseValue > isolatedCaveThreshold)
                 {
                     tilemap.SetTile(new Vector3Int(x, y, 0), null);
-                }      
+                }
             }
         }
     }
@@ -245,21 +248,26 @@ public class WorldGenerator : MonoBehaviour
             // Get the next direction to dig in
             float xNoise = Mathf.PerlinNoise(step * 0.1f, noiseOffset);
             float xStep = horizontalDir * (0.5f + xNoise);
-            
             float yNoise = Mathf.PerlinNoise(step * caveTurnFreq, noiseOffset + 500);
             float yStep = (yNoise - 0.5f) * verticalIntensity;
+
+            // Add downwards bias
             yStep -= 0.15f;
 
+            // Move current position
             curPos += new Vector2(xStep, yStep);
-            
+
+            // If it is at the edge of the world bounce back on itself
             if ((curPos.x < 5 || curPos.x > worldWidth - 5) && cavesBounce)
             {
                 horizontalDir *= -1f;
                 curPos.x = Mathf.Clamp(curPos.x, 5, worldWidth - 5);
             }
 
+            // Add a random chance to bounce back on itself
             if (Random.value < 0.02f) horizontalDir *= -1f;
 
+            // Add variation to the width
             int curWidth = varyCaveWidth ? Random.Range(0, 1) + caveWidth : caveWidth;
             if (curPos.x > curWidth && curPos.y < worldHeight && curPos.y > curWidth)
             {
@@ -293,19 +301,25 @@ public class WorldGenerator : MonoBehaviour
 
     private void SetupEnemyGrid()
     {
+        // Set grid position and size
         GridGraph graph = AstarPath.active.graphs.OfType<GridGraph>().First();
         graph.SetDimensions(worldWidth, worldHeight, 1f);
 
+        // Ensure it is on the correct mode for scanning
         tilemapCollider2D.compositeOperation = Collider2D.CompositeOperation.None;
 
+        // Force a tilemap rebuilt and wait for completion
         tilemapCollider2D.enabled = false;
         tilemapCollider2D.enabled = true;
         Physics2D.SyncTransforms();
 
+        // Scan the graph for valid route
         graph.Scan();
 
+        // Set to the more efficient collider type
         tilemapCollider2D.compositeOperation = Collider2D.CompositeOperation.Merge;
 
+        // Force a rebuild
         tilemapCollider2D.enabled = false;
         tilemapCollider2D.enabled = true;
     }
@@ -317,14 +331,17 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateBlackout()
     {
+        // Ensure tilemap is empty
         blackout.ClearAllTiles();
         blackout.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
 
+        // Loop through every block a terrain peice can be placed on
         for (int x = 0; x < worldWidth; x++)
         {
             int surfaceHeight = surfaceHeightCache[x];
             for (int y = 0; y < surfaceHeight; y++)
             {
+                // If there is a tile - place a backing tile
                 if (tilemap.HasTile(new Vector3Int(x, y, 0)))
                 {
                     blackout.SetTile(new Vector3Int(x, y, 0), blackoutTile);
@@ -335,9 +352,11 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateBackgroundBlackout()
     {
+        // Clear all tiles and set position
         backgroundBlackout.ClearAllTiles();
         backgroundBlackout.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
 
+        // Place a tile on every tile below the surface
         for (int x = 0; x < worldWidth; x++)
         {
             int surfaceHeight = surfaceHeightCache[x];
@@ -350,13 +369,17 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateBackground()
     {
+        // Clear all tiles and set position
         background.ClearAllTiles();
         background.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
+
+        // Loop through all tiles that are below the world surface
         for (int x = 0; x < worldWidth; x++)
         {
             int surfaceHeight = surfaceHeightCache[x];
             for (int y = 0; y < surfaceHeight; y++)
             {
+                // Place a background tile behind every tile
                 background.SetTile(new Vector3Int(x, y, 0), lightRockTile);
             }
         }

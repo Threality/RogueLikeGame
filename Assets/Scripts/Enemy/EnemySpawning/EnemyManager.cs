@@ -192,7 +192,7 @@ public class EnemyManager : MonoBehaviour
             NNInfo nearestNode = AstarPath.active.GetNearest((Vector3) position, NNConstraint.Default);
 
             // If it was near one return the coords of the nearest node
-            if (nearestNode.node != null) return (Vector2) nearestNode.position;
+            if (nearestNode.node != null && nearestNode.node.Walkable) return (Vector2) nearestNode.position;
         }
 
         // Return a default value if no location is found
