@@ -51,7 +51,7 @@ public class EnemyManager : MonoBehaviour
     void FixedUpdate()
     {
         // Get the difficulty and a random number
-        float difficulty = GameManager.instance.GetDifficulty();
+        float difficulty = GameManager.instance.GetDifficulty(player);
         int rand = Random.Range(0,  ENEMY_SPAWN_RATE);
 
         // Check whether an enemy should be spawned
@@ -91,7 +91,7 @@ public class EnemyManager : MonoBehaviour
         if(validEnemies.Count == 0) return;
 
         // Find the enemy to spawn using the filtered weights and biomes
-        EnemyData enemyToSpawn = GetEnemyToSpawn(validEnemies, gameManager.GetDifficulty());
+        EnemyData enemyToSpawn = GetEnemyToSpawn(validEnemies, gameManager.GetDifficulty(player));
 
         // Spawn the enemy in
         GameObject enemyObj = Instantiate(enemyToSpawn.prefab, position, Quaternion.identity, enemiesContainer.transform);

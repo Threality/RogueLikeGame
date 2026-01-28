@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
     // Get important references
     public GameObject player;
     public GameObject hub;
-    public GameObject tempCamera;
 
     // World generation
     public enum Biomes
@@ -70,10 +69,10 @@ public class GameManager : MonoBehaviour
         return curState;
     }
 
-    public float GetDifficulty()
+    public float GetDifficulty(GameObject obj)
     {
         // Call distance function with player and hub
-        float dist = GetDistanceToObject(player, hub);
+        float dist = GetDistanceToObject(obj, hub);
 
         // Prevent undefined values and exit early with a default value
         if (dist <= 10)

@@ -183,7 +183,7 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
     #region UI
 
 
-    void UpdateUI()
+    private void UpdateUI()
     {
         // Update all inventorySlots
         for (int i = 0; i < space; i++)
@@ -212,6 +212,7 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
         chestMenu = false;
 
         informationDisplayer.ClearSlots();
+        WorkbenchManager.instance.CloseWorkbench();
 
         // Open or close inventory
         inventoryUI.SetActive(!inventoryUI.activeSelf);

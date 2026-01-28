@@ -21,6 +21,7 @@ public class HubManager : MonoBehaviour
 
     [Header("Current Stats")]
     public int miningSpeed = 1;
+    public int ladderCost = 2;
 
     // Data
     private float miningProgress = 0f;
@@ -50,7 +51,7 @@ public class HubManager : MonoBehaviour
             .ToList();
     }
 
-    private void CraftItem(RecipeData recipe)
+    public void CraftItem(RecipeData recipe)
     {
         for (int i = 0; i < recipe.requiredMaterials.Count; i++)
         {
@@ -102,5 +103,10 @@ public class HubManager : MonoBehaviour
                 break;
         }
         return false;
+    }
+
+    public void PlacedLadderCost()
+    {
+        scraps -= ladderCost;
     }
 }

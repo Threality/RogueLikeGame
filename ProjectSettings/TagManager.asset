@@ -9,6 +9,7 @@ TagManager:
   - Ladder
   - Chest
   - Workbench
+  - Hub
   layers:
   - Default
   - TransparentFX

@@ -6,6 +6,7 @@ using UnityEditor.Tilemaps;
 using System.Linq;
 using System.CodeDom.Compiler;
 using Unity.Collections;
+using NUnit.Framework.Constraints;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class WorldGenerator : MonoBehaviour
     public Tilemap ladderMap;
     public TilemapCollider2D tilemapCollider2D;
     public TilesetOrganiser tilesetOrganiser;
+    public ItemGenerator itemGenerator;
+    public GameObject loadingScreen;
     public TileBase grassTile;
     public TileBase dirtTile;
     public TileBase stoneTile;
@@ -71,6 +74,17 @@ public class WorldGenerator : MonoBehaviour
     [Header("Enemies")]
     public bool generateEnemyMap = true;
 
+    [Header("Structures")]
+    public bool generateStructures = true;
+    public GameObject chestPrefab;
+    public Transform chestContainer;
+    public GameObject hub;
+    public Transform gameContainer;
+    public int numChests = 200;
+
+    [Header("Game")]
+    public GameObject player;
+
     // Data
     [HideInInspector] public int[] surfaceHeightCache;
     [HideInInspector] public float[] temperatureCache;
@@ -87,9 +101,16 @@ public class WorldGenerator : MonoBehaviour
 
     private void Start()
     {
-        if (randomSeed) seed = Random.Range(0, 1_000_000_000);
+        NewWorld();
+    }
+
+    public void NewWorld()
+    {
+        loadingScreen.SetActive(true);
+        if (randomSeed) seed = Random.Range(0, 1_000_000);
         GameManager.instance.IncrementGalaticDepth();
         if (generateWorld) GenerateWorld();
+        loadingScreen.SetActive(false);
     }
 
 
@@ -103,6 +124,7 @@ public class WorldGenerator : MonoBehaviour
         GenerateInitialTerrain();
         if (generateWormCaves) GenerateWormCaves();
         if (generateIsolatedCaves) GenerateIsolatedCaves();
+        if (generateStructures) GenerateStructures();
         tilesetOrganiser.ProcessMap(tilemap);
         if (generateBackground)
         {
@@ -114,6 +136,7 @@ public class WorldGenerator : MonoBehaviour
         if (generateEnemyMap) SetupEnemyGrid();
         ladderMap.ClearAllTiles();
         ladderMap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
+        player.transform.position = new Vector2(0, surfaceHeightCache[worldWidth / 2] - worldHeight / 2 + 1);
     }
 
     private void GenerateInitialHeightMap()
@@ -389,6 +412,49 @@ public class WorldGenerator : MonoBehaviour
 
 
     #endregion
+    #region Structures
+
+
+    private void GenerateStructures()
+    {
+        int segmentSize = Mathf.FloorToInt(worldWidth / numChests);
+
+        for (int i = 0; i < numChests; i++)
+        {
+            int offset = Random.Range(0, segmentSize);
+            int xCoord = segmentSize * i + offset;
+
+            List<int> yCoords = new List<int>();
+            for (int j = 0; j < worldHeight; j++) yCoords.Add(j);
+            Shuffle(yCoords);
+
+            foreach (int yCoord in yCoords)
+            {
+                if (StructureFits(2, 1, new Vector2Int(xCoord, yCoord)))
+                {
+                    GameObject chest = Instantiate(chestPrefab, chestContainer);
+                    chest.transform.position = new Vector3(xCoord - (worldWidth / 2) + 1, yCoord - (worldHeight / 2) + 1, 0);
+                    chest.GetComponent<ChestData>().Initialise(itemGenerator.GenerateRandomChestLoot(GameManager.instance.GetDifficulty(chest)),
+                    Mathf.FloorToInt(Random.Range(2,7) * GameManager.instance.GetDifficulty(chest)),
+                    Mathf.FloorToInt(Random.Range(1,5) * GameManager.instance.GetDifficulty(chest)));
+                    break;
+                }    
+            }
+        }
+
+        int yPos = surfaceHeightCache[Mathf.FloorToInt(worldWidth / 2)];
+        for (int i = -7; i < 7; i++)
+        {
+            for (int j = yPos; j < worldHeight; j++)
+            {
+                tilemap.SetTile(new Vector3Int(i + worldWidth / 2, j, 0), null);
+            }
+        }
+        hub.transform.position = new Vector3(3, yPos - worldHeight / 2 + 4, 0);
+    }
+
+
+    #endregion
     #region Utilities
 
 
@@ -400,6 +466,36 @@ public class WorldGenerator : MonoBehaviour
             if (temperature >= biome.minTemp) return biome;
         }
         return biomes[0];
+    }
+
+    public void Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = UnityEngine.Random.Range(0, n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+
+    public bool StructureFits(int width, int height, Vector2Int coords)
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j <= height; j++)
+            {
+                if (tilemap.HasTile(new Vector3Int(coords.x + i, coords.y + j, 0))) return false;
+            }
+        }
+
+        for (int i = 0; i < width; i++)
+        {
+            if (!tilemap.HasTile(new Vector3Int(coords.x + i, coords.y - 1, 0))) return false;
+        }
+        return true;
     }
 
     #endregion

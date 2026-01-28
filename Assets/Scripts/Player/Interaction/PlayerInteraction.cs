@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
-using UnityEditor.Rendering.LookDev;
 
 public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInteractionActions
 {
@@ -10,6 +9,10 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
     public ItemUse itemUse;
     public PlayerContainer playerContainer;
     public CollisionCheck collisionCheck;
+
+    // Data
+    private float regenProgress = 0f;
+    private float regenSpeed = 3f;
 
     void OnEnable()
     {
@@ -34,6 +37,21 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
     #endregion
     #region Player Interaction
 
+
+    private void Update()
+    {
+        if (PlayerContainer.instance.health == PlayerContainer.instance.MAX_HEALTH) return;
+
+        regenProgress += regenSpeed * Time.deltaTime / 60f;
+
+        if (regenProgress >= 1f)
+        {
+            regenProgress -= 1;
+            PlayerContainer.instance.health += 1;
+            HealthbarManager.instance.UpdateHealthBar();
+        }
+    }
+
     private void OnHit(PlayerContext context)
     {
         // If the player does not have i-frames remaining - take damage
@@ -56,6 +74,9 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
             PlayerContainer.instance.health = 0;
             PlayerEventManager.TriggerEvent(PlayerEventManager.Events.PlayerDeath, context);
         }
+
+        HealthbarManager.instance.UpdateHealthBar();
+        regenProgress = 0f;
     }
 
     private void Death(PlayerContext context)
@@ -86,9 +107,17 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (collisionCheck.IsTouchingChest() && !inventoryManager.IsInMenu())
+        if (!context.performed ||inventoryManager.IsInMenu() || WorkbenchManager.instance.IsInMenu()) return;
+
+        if (collisionCheck.IsTouchingChest())
         {
-            inventoryManager.OpenWithChestLoot(collisionCheck.GetItemsInChest());
+            ChestData chest = collisionCheck.GetItemsInChest();
+            chest.Open();
+            inventoryManager.OpenWithChestLoot(chest);
+        }
+        else if (collisionCheck.IsTouchingWorkbench())
+        {
+            WorkbenchManager.instance.OpenWorkbench();
         }
     }
 
@@ -96,6 +125,7 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
     {
         if (!context.performed) return;
 
+        HubManager.instance.PlacedLadderCost();
         itemUse.UseLadder();
     }
     #endregion

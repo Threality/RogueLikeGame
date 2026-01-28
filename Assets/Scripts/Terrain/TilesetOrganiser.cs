@@ -56,7 +56,7 @@ public class TilesetOrganiser : MonoBehaviour
             }
         }
 
-        Shuffle(allGroundTiles);
+        worldGenerator.Shuffle(allGroundTiles);
 
         foreach (Vector3Int pos in allGroundTiles)
         {
@@ -134,19 +134,6 @@ public class TilesetOrganiser : MonoBehaviour
                 MarkVisited(currentPos);
                 i++;
             }
-        }
-    }
-
-    private void Shuffle<T>(List<T> list)
-    {
-        int n = list.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = UnityEngine.Random.Range(0, n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
         }
     }
 

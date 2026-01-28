@@ -18,7 +18,7 @@ public class ProjectileController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // Dont detect the player
-        if (collision.CompareTag("Player")) return;
+        if (collision.CompareTag("Player") || collision.CompareTag("Chest")) return;
         
         // Damage an enemy
         if (collision.CompareTag("Enemy"))
