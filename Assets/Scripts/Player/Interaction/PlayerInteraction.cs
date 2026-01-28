@@ -9,6 +9,8 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
     public InventoryManager inventoryManager;
     public ItemUse itemUse;
     public PlayerContainer playerContainer;
+    public CollisionCheck collisionCheck;
+
     void OnEnable()
     {
         // Connect player input and events to script
@@ -79,6 +81,14 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         {
             itemUse.UseItem(inventoryManager.equippedItem);
             playerContainer.useCooldown = inventoryManager.equippedItem.useTime;
+        }
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (collisionCheck.IsTouchingChest() && !inventoryManager.IsInMenu())
+        {
+            inventoryManager.OpenWithChestLoot(collisionCheck.GetItemsInChest());
         }
     }
 

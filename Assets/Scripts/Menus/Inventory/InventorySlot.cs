@@ -9,6 +9,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler
     public Image icon;
     public ItemData data;
     public int slotNum;
+    public bool inChest;
     public InformationDisplayer informationDisplayer;
     public InventoryManager inventoryManager;
 
@@ -35,6 +36,13 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler
 
     public void OnClick()
     {
+        if (inventoryManager.chestMenu && inventoryManager.equippedItem != data)
+        {
+            inventoryManager.MoveItem(data, inChest);
+        }
+
+        if (inventoryManager.chestMenu) return;
+
         // Exit early if item cannot be equipped
         if (!data) return;
         if (!data.isUsable) return;

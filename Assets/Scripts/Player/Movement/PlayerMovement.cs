@@ -22,7 +22,7 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     [Header("Colliders")]
     [SerializeField] private GroundCheck groundCheck;
-    [SerializeField] private LadderCheck ladderCheck;
+    [SerializeField] private CollisionCheck ladderCheck;
 
     // Set up hidden values 
     private float coyoteTime = 0;

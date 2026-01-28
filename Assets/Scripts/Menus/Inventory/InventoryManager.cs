@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
 
 public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryActions
 {
@@ -12,16 +13,21 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
     // Store inventory data
     [Header("Data")]
     public List<ItemData> inventory = new  List<ItemData>();
-    private InventorySlot[] slots;
+    private InventorySlot[] inventorySlots;
+    private InventorySlot[] chestSlots;
     public int space = 20;
     public bool inventoryDoesPause;
     public ItemData equippedItem;
+    public ChestData chestData;
+    public bool chestMenu;
 
     // References for the UI
     [Header("References")]
     public GameObject inventoryUI;
+    public GameObject chestUI;
     public GameObject slotPrefab;
     public Transform inventoryParent;
+    public Transform chestParent;
     // Default item for debugging
     public ItemData defaultItem;
     public InformationDisplayer informationDisplayer;
@@ -60,15 +66,31 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
             // Set key information
             InventorySlot slot = obj.GetComponent<InventorySlot>();
             slot.slotNum = i;
+            slot.inChest = false;
             slot.informationDisplayer = informationDisplayer;
             slot.inventoryManager = this;
         }
 
-        slots = inventoryParent.GetComponentsInChildren<InventorySlot>();
+        for (int i = 0; i < space; i++)
+        {
+            // Instantiate object
+            GameObject obj = Instantiate(slotPrefab, chestParent);
+
+            // Set key information
+            InventorySlot slot = obj.GetComponent<InventorySlot>();
+            slot.slotNum = i;
+            slot.inChest = true;
+            slot.informationDisplayer = informationDisplayer;
+            slot.inventoryManager = this;
+        }
+
+        inventorySlots = inventoryParent.GetComponentsInChildren<InventorySlot>();
+        chestSlots = chestParent.GetComponentsInChildren<InventorySlot>();
 
         // Hide it when starting the game
         UpdateUI();
         inventoryUI.SetActive(false);
+        chestUI.SetActive(false);
 
         // Enable input
         PlayerInputManager.Instance.playerControls.Inventory.Enable();
@@ -105,29 +127,80 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
     public void EquipItem(int itemNum)
     {
         // Store a reference to the data
-        equippedItem = slots[itemNum].data;
+        equippedItem = inventorySlots[itemNum].data;
 
         // Update visuals for the player
-        foreach (InventorySlot slot in slots)
+        foreach (InventorySlot slot in inventorySlots)
         {
             if (slot.slotNum == itemNum) slot.SetColor(equippedColor);
             else slot.SetColor(defaultColor);
         }
     }
 
+    
+    #endregion
+    #region Interactables
+
+
+    public bool IsInMenu()
+    {
+        return inventoryUI.activeSelf;
+    }
+    
+    public void OpenWithChestLoot(ChestData data)
+    {
+        chestMenu = true;
+        chestData = data;
+        informationDisplayer.ClearSlots();
+
+        inventoryUI.SetActive(true);
+        chestUI.SetActive(true);
+
+        if (inventoryUI.activeSelf && inventoryDoesPause) Time.timeScale = 0;
+        else Time.timeScale = 1f;
+
+        UpdateUI();
+    }
+
+    public void MoveItem(ItemData data, bool inChest)
+    {
+        if (!inChest)
+        {
+            chestData.AddToInventory(data);
+            inventory.Remove(data);
+        }
+        else
+        {
+            inventory.Add(data);
+            chestData.RemoveFromInventory(data);
+        }
+
+        UpdateUI();        
+    }
+
 
     #endregion
     #region UI
 
+
     void UpdateUI()
     {
-        // Update all slots
+        // Update all inventorySlots
         for (int i = 0; i < space; i++)
         {
-            if (i < inventory.Count) slots[i].Add(inventory[i]);
-            else slots[i].Clear();
+            if (i < inventory.Count) inventorySlots[i].Add(inventory[i]);
+            else inventorySlots[i].Clear();
+        }
+        
+        if (!chestData) return;
+        // Update all chestSlots
+        for (int i = 0; i < space; i++)
+        {
+            if (i < chestData.inventory.Count) chestSlots[i].Add(chestData.inventory[i]);
+            else chestSlots[i].Clear();
         }
     }
+
 
     #endregion
     #region Input
@@ -135,10 +208,14 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
 
     public void OnOpenInventory(InputAction.CallbackContext context)
     {
+        if (!context.performed) return;
+        chestMenu = false;
+
         informationDisplayer.ClearSlots();
 
         // Open or close inventory
         inventoryUI.SetActive(!inventoryUI.activeSelf);
+        chestUI.SetActive(false);
 
         if (inventoryUI.activeSelf && inventoryDoesPause) Time.timeScale = 0;
         else Time.timeScale = 1f;

@@ -7,6 +7,8 @@ TagManager:
   - Ground
   - Enemy
   - Ladder
+  - Chest
+  - Workbench
   layers:
   - Default
   - TransparentFX

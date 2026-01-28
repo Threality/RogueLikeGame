@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -9,7 +11,9 @@ public class GameManager : MonoBehaviour
     // Get important references
     public GameObject player;
     public GameObject hub;
+    public GameObject tempCamera;
 
+    // World generation
     public enum Biomes
     {
         Forest,
@@ -18,6 +22,7 @@ public class GameManager : MonoBehaviour
         MagmaCave
     }
 
+    // Spawning Mechanics
     public enum Rarity
     {
         Common,
@@ -35,11 +40,34 @@ public class GameManager : MonoBehaviour
         Gun,
     }
 
+    public enum Material
+    {
+        BlackSteel,
+        Plastic,
+        Scraps,
+        Polymers,
+    }
+
+    // Game Management
+    public enum GameState
+    {
+        Menu,
+        Playing,
+    }
+
+    private GameState curState;
+    private int galacticDepth;
+
     private void Awake()
     {
         // Check it is the only instance
         if (instance == null) instance = this;
         else Destroy(gameObject);
+    }
+
+    public GameState GetGameState()
+    {
+        return curState;
     }
 
     public float GetDifficulty()
@@ -55,7 +83,7 @@ public class GameManager : MonoBehaviour
                 
         // Return log representing difficulty
         float diff = Mathf.Log10(dist);
-        return diff;
+        return diff + galacticDepth - 1;
     }
 
     public Biomes GetCurrentBiome()
@@ -63,6 +91,16 @@ public class GameManager : MonoBehaviour
         // Link to terrain script to generate accurate result
         // For now return a default value
         return Biomes.Forest;
+    }
+
+    public int GetGalacticDepth()
+    {
+        return galacticDepth;
+    }
+
+    public void IncrementGalaticDepth()
+    {
+        galacticDepth++;
     }
     
     public float GetDistanceToObject(GameObject obj1, GameObject obj2)

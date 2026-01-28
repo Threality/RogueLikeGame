@@ -23,6 +23,7 @@ public class WorldGenerator : MonoBehaviour
     public TileBase lightRockTile;
 
     [Header("Generation Settings")]
+    public bool generateWorld = true;
     public int worldWidth = 256;
     public int worldHeight = 128;
     public int subSurfaceDepth = 10;
@@ -86,15 +87,16 @@ public class WorldGenerator : MonoBehaviour
 
     private void Start()
     {
-        if (randomSeed) seed = Random.Range(0, 1_000_000);
-        GenerateWorld();
+        if (randomSeed) seed = Random.Range(0, 1_000_000_000);
+        GameManager.instance.IncrementGalaticDepth();
+        if (generateWorld) GenerateWorld();
     }
 
 
     #endregion
     #region Surface
 
-
+    [ContextMenu("Generate World")]
     public void GenerateWorld()
     {
         GenerateInitialHeightMap();

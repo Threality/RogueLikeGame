@@ -759,6 +759,15 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""eda5b46a-c40c-42a8-9462-e7f474b640a3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -781,6 +790,17 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""PlaceLadder"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""151668b6-cad8-4c53-9842-0ce954f6c949"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -899,6 +919,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_PlayerInteraction = asset.FindActionMap("PlayerInteraction", throwIfNotFound: true);
         m_PlayerInteraction_UseItem = m_PlayerInteraction.FindAction("UseItem", throwIfNotFound: true);
         m_PlayerInteraction_PlaceLadder = m_PlayerInteraction.FindAction("PlaceLadder", throwIfNotFound: true);
+        m_PlayerInteraction_Interact = m_PlayerInteraction.FindAction("Interact", throwIfNotFound: true);
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_OpenInventory = m_Inventory.FindAction("OpenInventory", throwIfNotFound: true);
@@ -1300,6 +1321,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     private List<IPlayerInteractionActions> m_PlayerInteractionActionsCallbackInterfaces = new List<IPlayerInteractionActions>();
     private readonly InputAction m_PlayerInteraction_UseItem;
     private readonly InputAction m_PlayerInteraction_PlaceLadder;
+    private readonly InputAction m_PlayerInteraction_Interact;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerInteraction".
     /// </summary>
@@ -1319,6 +1341,10 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerInteraction/PlaceLadder".
         /// </summary>
         public InputAction @PlaceLadder => m_Wrapper.m_PlayerInteraction_PlaceLadder;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerInteraction/Interact".
+        /// </summary>
+        public InputAction @Interact => m_Wrapper.m_PlayerInteraction_Interact;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1351,6 +1377,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @PlaceLadder.started += instance.OnPlaceLadder;
             @PlaceLadder.performed += instance.OnPlaceLadder;
             @PlaceLadder.canceled += instance.OnPlaceLadder;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         /// <summary>
@@ -1368,6 +1397,9 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
             @PlaceLadder.started -= instance.OnPlaceLadder;
             @PlaceLadder.performed -= instance.OnPlaceLadder;
             @PlaceLadder.canceled -= instance.OnPlaceLadder;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         /// <summary>
@@ -1690,6 +1722,13 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnPlaceLadder(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteract(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "Inventory" which allows adding and removing callbacks.
