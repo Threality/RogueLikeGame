@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed2e3b1ae09fdb8cb81553567d6f3637, type: 3}
   m_Name: Plastic
   m_EditorClassIdentifier: Assembly-CSharp::RecipeData
-  isMaterial: 0
+  isMaterial: 1
   material: 1
   outputQuantity: 1
   output: {fileID: 0}
   requiredMaterials: 03000000
   materialQuantities: 0a000000
-  requiredCraftingLevel: 0
+  requiredCraftingLevel: 1

@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +14,8 @@ public class GameManager : MonoBehaviour
     // Get important references
     public GameObject player;
     public GameObject hub;
+
+    public float  deathTimer = 0;
 
     // World generation
     public enum Biomes
@@ -50,11 +55,16 @@ public class GameManager : MonoBehaviour
     // Game Management
     public enum GameState
     {
-        Menu,
+        MainMenu,
+        WorkbenchMenu,
+        ChestMenu,
+        InventoryMenu,
+        LoadingMenu,
+        DeathMenu,
         Playing,
     }
 
-    private GameState curState;
+    private GameState curState = GameState.MainMenu;
     private int galacticDepth;
 
     private void Awake()
@@ -64,9 +74,62 @@ public class GameManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
+    private void Update()
+    {
+        if (curState == GameState.MainMenu) return;
+        
+        if (!PlayerContainer.instance.playerIsAlive)
+        {
+            deathTimer += Time.deltaTime;
+        }
+
+        if (deathTimer > 1)
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
+    }
+
     public GameState GetGameState()
     {
         return curState;
+    }
+
+    public void ChangeGameState(GameState state)
+    {
+        if (curState == GameState.DeathMenu) return;
+
+        MenuManager.instance.DisableAll();
+
+        switch (state)
+        {
+            case GameState.Playing:
+                curState = GameState.Playing;
+                MenuManager.instance.EnterPlaying();
+                break;
+            case GameState.WorkbenchMenu:
+                curState = GameState.WorkbenchMenu;
+                MenuManager.instance.EnterWorkbench();
+                break;
+            case GameState.ChestMenu:
+                curState = GameState.ChestMenu;
+                MenuManager.instance.EnterChest();
+                break;
+            case GameState.InventoryMenu:
+                curState = GameState.InventoryMenu;
+                MenuManager.instance.EnterInventory();
+                break;
+            case GameState.LoadingMenu:
+                curState = GameState.LoadingMenu;
+                MenuManager.instance.EnterLoading();
+                break;
+            case GameState.DeathMenu:
+                curState = GameState.DeathMenu;
+                MenuManager.instance.EnterDeath();
+                break;
+            case GameState.MainMenu:
+                curState = GameState.MainMenu;
+                break;
+        }
     }
 
     public float GetDifficulty(GameObject obj)

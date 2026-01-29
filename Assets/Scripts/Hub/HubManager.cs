@@ -41,7 +41,19 @@ public class HubManager : MonoBehaviour
         {
             miningProgress--;
             scraps++;
+            List<int> mats = new List<int>();
+            MenuManager.instance.UpdateUI();
         }
+    }
+
+    public List<int> GetHubMaterials()
+    {
+        List<int> mats = new List<int>();
+        mats.Add(blackSteel);
+        mats.Add(plastic);
+        mats.Add(polymers);
+        mats.Add(scraps);
+        return mats;
     }
 
     public List<RecipeData> GetAvailableRecipes()

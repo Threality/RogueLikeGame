@@ -14,6 +14,7 @@ public class ItemUse : MonoBehaviour
     [Header("Ladders")]
     public Tilemap ladderMap;
     public Tilemap groundMap;
+    public Tilemap backgroundMap;
     public TileBase ladderTile;
 
     // Debugging variables
@@ -44,20 +45,28 @@ public class ItemUse : MonoBehaviour
         }
     }
 
-    public void UseLadder()
+    public bool UseLadder()
     {
+        Debug.Log("Ladder");
         Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
 
         float distance = Vector2.Distance(transform.position, mousePos);
-        if (distance > 10f) return;
+        if (distance > 10f) return false;
 
         Vector3Int cellPos = ladderMap.WorldToCell(mousePos);
 
-        if (ladderMap.HasTile(cellPos)) return;
-        if (groundMap.HasTile(cellPos)) return;
-
-        ladderMap.SetTile(cellPos, ladderTile);
+        if (ladderMap.HasTile(cellPos)) return false;
+        if (groundMap.HasTile(cellPos)) return false;
+        if (backgroundMap.HasTile(cellPos)
+         || ladderMap.HasTile(cellPos + Vector3Int.down)
+         || groundMap.HasTile(cellPos + Vector3Int.down))
+        {
+            Debug.Log("Placed");
+            ladderMap.SetTile(cellPos, ladderTile);
+            return true;
+        }
+        return false;
     }
 
 

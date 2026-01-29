@@ -106,11 +106,11 @@ public class WorldGenerator : MonoBehaviour
 
     public void NewWorld()
     {
-        loadingScreen.SetActive(true);
+        GameManager.instance.ChangeGameState(GameManager.GameState.LoadingMenu);
         if (randomSeed) seed = Random.Range(0, 1_000_000);
         GameManager.instance.IncrementGalaticDepth();
         if (generateWorld) GenerateWorld();
-        loadingScreen.SetActive(false);
+        GameManager.instance.ChangeGameState(GameManager.GameState.Playing);
     }
 
 

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class RecipeSlot : MonoBehaviour
 {
@@ -38,6 +39,7 @@ public class RecipeSlot : MonoBehaviour
         itemName.text = data.name;
         ingredient1.text = data.requiredMaterials[0].ToString()+ ". Quantity: " + data.materialQuantities[0].ToString();
         if (data.requiredMaterials.Count > 1) ingredient2.text = data.requiredMaterials[1].ToString()+ ". Quantity: " + data.materialQuantities[1].ToString();
+        else ingredient2.text = "";
     }
 
     public void CallCrafting()

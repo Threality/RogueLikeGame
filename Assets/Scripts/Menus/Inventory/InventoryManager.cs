@@ -149,15 +149,10 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
     
     public void OpenWithChestLoot(ChestData data)
     {
+        GameManager.instance.ChangeGameState(GameManager.GameState.ChestMenu);
         chestMenu = true;
         chestData = data;
         informationDisplayer.ClearSlots();
-
-        inventoryUI.SetActive(true);
-        chestUI.SetActive(true);
-
-        if (inventoryUI.activeSelf && inventoryDoesPause) Time.timeScale = 0;
-        else Time.timeScale = 1f;
 
         UpdateUI();
     }
@@ -212,14 +207,10 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
         chestMenu = false;
 
         informationDisplayer.ClearSlots();
-        WorkbenchManager.instance.CloseWorkbench();
 
         // Open or close inventory
-        inventoryUI.SetActive(!inventoryUI.activeSelf);
-        chestUI.SetActive(false);
-
-        if (inventoryUI.activeSelf && inventoryDoesPause) Time.timeScale = 0;
-        else Time.timeScale = 1f;
+        if (GameManager.instance.GetGameState() == GameManager.GameState.Playing) GameManager.instance.ChangeGameState(GameManager.GameState.InventoryMenu);
+        else if (GameManager.instance.GetGameState() == GameManager.GameState.InventoryMenu) GameManager.instance.ChangeGameState(GameManager.GameState.Playing);
     }
     #endregion
 }

@@ -1,6 +1,13 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
+
+/*
+Code==Done
+jigglephysics==extra
+mr fat computer guy =pleased
+*/
 
 public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInteractionActions
 {
@@ -85,8 +92,7 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         PlayerContainer.instance.playerIsAlive = false;
         // Clear the inventory
         InventoryManager.instance.inventory = new List<ItemData>();
-        // Save the game
-        // Generate a new world
+        // Delete save data
     }
 
     #endregion
@@ -107,7 +113,12 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
 
     public void OnInteract(InputAction.CallbackContext context)
     {
-        if (!context.performed ||inventoryManager.IsInMenu() || WorkbenchManager.instance.IsInMenu()) return;
+        if (!context.performed) return;
+        if (GameManager.instance.GetGameState() != GameManager.GameState.Playing)
+        {
+            GameManager.instance.ChangeGameState(GameManager.GameState.Playing);
+            return;
+        }
 
         if (collisionCheck.IsTouchingChest())
         {
@@ -117,7 +128,7 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         }
         else if (collisionCheck.IsTouchingWorkbench())
         {
-            WorkbenchManager.instance.OpenWorkbench();
+            GameManager.instance.ChangeGameState(GameManager.GameState.WorkbenchMenu);
         }
     }
 
@@ -125,8 +136,7 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
     {
         if (!context.performed) return;
 
-        HubManager.instance.PlacedLadderCost();
-        itemUse.UseLadder();
+        if (itemUse.UseLadder()) HubManager.instance.PlacedLadderCost();
     }
     #endregion
 }

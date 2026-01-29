@@ -9,7 +9,6 @@ public class WorkbenchManager : MonoBehaviour
     
     [Header("Data")]
     public int space = 5;
-    private bool inMenu = false;
 
     [Header("References")]
     public GameObject slotPrefab;
@@ -36,9 +35,6 @@ public class WorkbenchManager : MonoBehaviour
             RecipeSlot slot = obj.GetComponent<RecipeSlot>();
             slot.Add(recipe);
         }
-
-        inMenu = !inMenu;
-        workbenchUI.SetActive(!workbenchUI.activeSelf);
     }
 
     public void CloseWorkbench()
@@ -46,12 +42,5 @@ public class WorkbenchManager : MonoBehaviour
         GameObject[] toDestroy = new GameObject[workbenchParent.childCount];
         for (int i = 0; i < workbenchParent.childCount; i++) toDestroy[i] = workbenchParent.GetChild(i).gameObject;
         for (int i = 0; i < workbenchParent.childCount; i++) Destroy(toDestroy[i]);
-        inMenu = false;
-        workbenchUI.SetActive(false);
-    }
-
-    public bool IsInMenu()
-    {
-        return inMenu;
     }
 }

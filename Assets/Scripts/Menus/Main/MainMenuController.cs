@@ -15,6 +15,7 @@ public class MainMenuController : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;  
         mainMenu.SetActive(true);
         loadingScreen.SetActive(false);  
+        GameManager.instance.ChangeGameState(GameManager.GameState.MainMenu);
     }
 
     public void Play()
