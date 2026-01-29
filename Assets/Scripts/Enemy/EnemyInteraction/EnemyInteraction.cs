@@ -20,7 +20,14 @@ public class EnemyInteraction : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
-        if (health <= 0) enemyManager.RemoveEnemy(gameObject);
+        if (health <= 0) Death();
+    }
+
+    public void Death()
+    {
+        HubManager.instance.AddMaterial(GameManager.Material.Polymers, data.polymerValue);
+        enemyManager.RemoveEnemy(gameObject);
+        MenuManager.instance.UpdateUI();
     }
 
     private void OnTriggerStay2D(Collider2D collision)

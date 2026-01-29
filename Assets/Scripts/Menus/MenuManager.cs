@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using TMPro;
-using Unity.Mathematics;
-using Pathfinding.Ionic.Zip;
+using System.Collections;
+using Unity.VisualScripting;
 
 public class MenuManager : MonoBehaviour
 {
@@ -16,7 +15,18 @@ public class MenuManager : MonoBehaviour
     public GameObject loadingUI;
     public GameObject inGameUI;
     public GameObject deathUI;
+    public GameObject LaunchUI;
     public List<TextMeshProUGUI> hudMats = new List<TextMeshProUGUI>();
+    public List<TextMeshProUGUI> quotaMats = new List<TextMeshProUGUI>();
+    public TextMeshProUGUI quotaCount;
+
+    [Header("Alerts")]
+    public GameObject alertUI;
+    public TextMeshProUGUI alertText;
+
+    [Header("Upgrades")]
+    public TextMeshProUGUI craftingCost;
+    public TextMeshProUGUI drillCost;
 
     private void Awake()
     {
@@ -33,6 +43,7 @@ public class MenuManager : MonoBehaviour
         loadingUI.SetActive(false);
         inGameUI.SetActive(false);
         deathUI.SetActive(false);
+        LaunchUI.SetActive(false);
         Time.timeScale = 1f;
     }
 
@@ -71,6 +82,11 @@ public class MenuManager : MonoBehaviour
         deathUI.SetActive(true);
     }
 
+    public void EnterLaunch()
+    {
+        LaunchUI.SetActive(true);
+    }
+
     public void UpdateUI()
     {
         List<int> counts = HubManager.instance.GetHubMaterials();
@@ -78,5 +94,30 @@ public class MenuManager : MonoBehaviour
         {
             hudMats[i].text = counts[i].ToString();
         }
+
+        for (int i = 0; i < quotaMats.Count; i++)
+        {
+            quotaMats[i].text = counts[i].ToString();
+        }
+
+        quotaCount.text = counts[0] + " / "+ HubManager.instance.GetQuota() + " Steel";
+        craftingCost.text = HubManager.instance.GetCraftingUpgradeCost().ToString();
+        drillCost.text = HubManager.instance.GetMiningUpgradeCost().ToString();
+    }
+
+    public void AlertUser(string text)
+    {
+        alertText.text = text;
+        StopAllCoroutines();
+        StartCoroutine(ShowAlert());
+    }
+
+    private IEnumerator ShowAlert()
+    {
+        alertUI.SetActive(true);
+
+        yield return new WaitForSecondsRealtime(1f);
+
+        alertUI.SetActive(false);
     }
 }

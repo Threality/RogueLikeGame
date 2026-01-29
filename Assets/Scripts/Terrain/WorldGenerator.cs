@@ -101,21 +101,29 @@ public class WorldGenerator : MonoBehaviour
 
     private void Start()
     {
-        NewWorld();
+        NewWorld(GameManager.instance.loadSave);
     }
 
-    public void NewWorld()
+    public void NewWorld(bool loadSave)
     {
+        if (!loadSave) SaveManager.instance.SaveGame();
         GameManager.instance.ChangeGameState(GameManager.GameState.LoadingMenu);
         if (randomSeed) seed = Random.Range(0, 1_000_000);
         GameManager.instance.IncrementGalaticDepth();
         if (generateWorld) GenerateWorld();
         GameManager.instance.ChangeGameState(GameManager.GameState.Playing);
+        ladderMap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
+        player.transform.position = surfaceHeightCache.Count() > 0 ? new Vector2(0, surfaceHeightCache[worldWidth / 2] - worldHeight / 2 + 1) : new Vector3(0, 0, 0);
+        PlayerContainer.instance.health = PlayerContainer.instance.MAX_HEALTH;
+        GameManager.instance.difficultyTimer = 0f;
+        if (loadSave) SaveManager.instance.LoadGame();
+        MenuManager.instance.UpdateUI();
     }
 
 
     #endregion
     #region Surface
+    
 
     [ContextMenu("Generate World")]
     public void GenerateWorld()
@@ -135,8 +143,6 @@ public class WorldGenerator : MonoBehaviour
         if (generateBackgroundBlackout) GenerateBackgroundBlackout();
         if (generateEnemyMap) SetupEnemyGrid();
         ladderMap.ClearAllTiles();
-        ladderMap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
-        player.transform.position = new Vector2(0, surfaceHeightCache[worldWidth / 2] - worldHeight / 2 + 1);
     }
 
     private void GenerateInitialHeightMap()
@@ -496,6 +502,13 @@ public class WorldGenerator : MonoBehaviour
             if (!tilemap.HasTile(new Vector3Int(coords.x + i, coords.y - 1, 0))) return false;
         }
         return true;
+    }
+
+    public float GameLocationToTileTemperature(GameObject obj)
+    {
+        int posX = Mathf.RoundToInt(obj.transform.position.x + worldWidth / 2);
+        Debug.Log(posX);
+        return temperatureCache[posX];
     }
 
     #endregion

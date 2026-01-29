@@ -34,7 +34,6 @@ public class EnemyManager : MonoBehaviour
 
     // References
     [Header("References")]
-    public GameManager gameManager;
     public GameObject enemiesContainer;
     public GameObject player;
     public Transform targetContainer;
@@ -84,14 +83,14 @@ public class EnemyManager : MonoBehaviour
     private void SpawnEnemy(Vector2 position)
     {
         // Filter out enemies that cant spawn in this biome
-        GameManager.Biomes currentBiome =  gameManager.GetCurrentBiome();
+        GameManager.Biomes currentBiome =  GameManager.instance.GetCurrentBiome();
         List<EnemyData> validEnemies = ENEMY_POOL.Where(x => x.spawnBiomes.Contains(currentBiome)).ToList();
 
         // Return early if no enemies can be found
         if(validEnemies.Count == 0) return;
 
         // Find the enemy to spawn using the filtered weights and biomes
-        EnemyData enemyToSpawn = GetEnemyToSpawn(validEnemies, gameManager.GetDifficulty(player));
+        EnemyData enemyToSpawn = GetEnemyToSpawn(validEnemies, GameManager.instance.GetDifficulty(player));
 
         // Spawn the enemy in
         GameObject enemyObj = Instantiate(enemyToSpawn.prefab, position, Quaternion.identity, enemiesContainer.transform);

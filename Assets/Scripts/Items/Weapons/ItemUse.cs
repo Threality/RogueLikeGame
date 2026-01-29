@@ -47,7 +47,6 @@ public class ItemUse : MonoBehaviour
 
     public bool UseLadder()
     {
-        Debug.Log("Ladder");
         Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
 
@@ -62,7 +61,6 @@ public class ItemUse : MonoBehaviour
          || ladderMap.HasTile(cellPos + Vector3Int.down)
          || groundMap.HasTile(cellPos + Vector3Int.down))
         {
-            Debug.Log("Placed");
             ladderMap.SetTile(cellPos, ladderTile);
             return true;
         }

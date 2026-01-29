@@ -1,7 +1,3 @@
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -11,11 +7,11 @@ public class GameManager : MonoBehaviour
     // Create instance
     public static GameManager instance;
 
-    // Get important references
-    public GameObject player;
-    public GameObject hub;
-
+    // Data
     public float  deathTimer = 0;
+    public float difficultyTimer = 0;
+    public float difficultyMult = 0.01f;
+    public bool loadSave = true;
 
     // World generation
     public enum Biomes
@@ -59,6 +55,7 @@ public class GameManager : MonoBehaviour
         WorkbenchMenu,
         ChestMenu,
         InventoryMenu,
+        LaunchMenu,
         LoadingMenu,
         DeathMenu,
         Playing,
@@ -72,6 +69,7 @@ public class GameManager : MonoBehaviour
         // Check it is the only instance
         if (instance == null) instance = this;
         else Destroy(gameObject);
+        DontDestroyOnLoad(transform.parent);
     }
 
     private void Update()
@@ -87,6 +85,14 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene("MainMenu");
         }
+
+        difficultyTimer += difficultyTimer * difficultyMult * Time.deltaTime + Time.deltaTime / 300f;
+    }
+
+    public void StartGame(bool loadGame)
+    {
+        loadSave = loadGame;
+        SceneManager.LoadScene("Gameplay");
     }
 
     public GameState GetGameState()
@@ -98,7 +104,7 @@ public class GameManager : MonoBehaviour
     {
         if (curState == GameState.DeathMenu) return;
 
-        MenuManager.instance.DisableAll();
+        if (state != GameState.MainMenu) MenuManager.instance.DisableAll();
 
         switch (state)
         {
@@ -129,23 +135,24 @@ public class GameManager : MonoBehaviour
             case GameState.MainMenu:
                 curState = GameState.MainMenu;
                 break;
+            case GameState.LaunchMenu:
+                curState = GameState.LaunchMenu;
+                MenuManager.instance.EnterLaunch();
+                break;
         }
     }
 
     public float GetDifficulty(GameObject obj)
     {
         // Call distance function with player and hub
-        float dist = GetDistanceToObject(obj, hub);
+        float dist = GetDistanceToObject(obj, HubManager.instance.hub);
 
         // Prevent undefined values and exit early with a default value
-        if (dist <= 10)
-        {
-            return 1f;
-        }
+        float diff = 1f;
+        if (dist > 10) diff = Mathf.Log10(dist);
                 
         // Return log representing difficulty
-        float diff = Mathf.Log10(dist);
-        return diff + galacticDepth - 1;
+        return diff + galacticDepth + difficultyTimer - 1;
     }
 
     public Biomes GetCurrentBiome()
@@ -180,7 +187,7 @@ public class GameManager : MonoBehaviour
         Vector2 mouseScreenLocation = Mouse.current.position.ReadValue();
         Vector3 mouseWorldLocation = Camera.main.ScreenToWorldPoint(mouseScreenLocation);
 
-        Vector2 direction = mouseWorldLocation - player.transform.position;
+        Vector2 direction = mouseWorldLocation - PlayerContainer.instance.player.transform.position;
         return direction.normalized;
     }
 }

@@ -20,8 +20,11 @@ public class HubManager : MonoBehaviour
     public List<RecipeData> recipes = new List<RecipeData>();
 
     [Header("Current Stats")]
-    public int miningSpeed = 1;
     public int ladderCost = 2;
+
+    [Header("References")]
+    public ChestData hubChest;
+    public GameObject hub;
 
     // Data
     private float miningProgress = 0f;
@@ -35,24 +38,25 @@ public class HubManager : MonoBehaviour
 
     private void Update()
     {
-        miningProgress += miningSpeed * Time.deltaTime;
+        miningProgress += miningLevel * Time.deltaTime * 2;
 
         if (miningProgress >= 1)
         {
             miningProgress--;
             scraps++;
-            List<int> mats = new List<int>();
             MenuManager.instance.UpdateUI();
         }
     }
 
     public List<int> GetHubMaterials()
     {
-        List<int> mats = new List<int>();
-        mats.Add(blackSteel);
-        mats.Add(plastic);
-        mats.Add(polymers);
-        mats.Add(scraps);
+        List<int> mats = new List<int>
+        {
+            blackSteel,
+            plastic,
+            polymers,
+            scraps
+        };
         return mats;
     }
 
@@ -63,11 +67,30 @@ public class HubManager : MonoBehaviour
             .ToList();
     }
 
+    public float GetQuota()
+    {
+        return Mathf.Round(25 * Mathf.Pow(1.5f, GameManager.instance.GetGalacticDepth()));
+    }
+
+    public float GetCraftingUpgradeCost()
+    {
+        return Mathf.Round(50 * Mathf.Pow(4f, craftingLevel - 1));
+    }
+
+    public float GetMiningUpgradeCost()
+    {
+        return Mathf.Round(30 * Mathf.Pow(2f, miningLevel - 1));
+    }
+
     public void CraftItem(RecipeData recipe)
     {
         for (int i = 0; i < recipe.requiredMaterials.Count; i++)
         {
-            if (!HasSufficient(recipe.requiredMaterials[i], recipe.materialQuantities[i])) return;
+            if (!HasSufficient(recipe.requiredMaterials[i], recipe.materialQuantities[i]))
+            {
+                MenuManager.instance.AlertUser("Not enough resources");
+                return;
+            }
         }
 
         for (int i = 0; i < recipe.requiredMaterials.Count; i++)
@@ -78,6 +101,38 @@ public class HubManager : MonoBehaviour
         if (recipe.isMaterial)
         {
             AddMaterial(recipe.material, recipe.outputQuantity);
+        }
+
+        MenuManager.instance.UpdateUI();
+    }
+
+    public void UpgradeCrafting()
+    {
+        if (plastic >= GetCraftingUpgradeCost())
+        {
+            plastic -= (int) GetCraftingUpgradeCost();
+            craftingLevel++;
+            MenuManager.instance.AlertUser("Upgraded crafting!");
+            MenuManager.instance.UpdateUI();
+        }
+        else
+        {
+            MenuManager.instance.AlertUser("Not enough plastic!");
+        }
+    }
+
+    public void UpgradeDrill()
+    {
+        if (plastic >= GetMiningUpgradeCost())
+        {
+            plastic -= (int) GetMiningUpgradeCost();
+            miningLevel++;
+            MenuManager.instance.AlertUser("Upgraded drill!");
+            MenuManager.instance.UpdateUI();
+        }
+        else
+        {
+            MenuManager.instance.AlertUser("Not enough plastic!");
         }
     }
 
@@ -97,7 +152,7 @@ public class HubManager : MonoBehaviour
         return false;
     }
 
-    private bool AddMaterial(GameManager.Material material, int quantity)
+    public bool AddMaterial(GameManager.Material material, int quantity)
     {
         switch (material)
         {

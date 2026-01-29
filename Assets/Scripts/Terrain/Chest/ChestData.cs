@@ -7,8 +7,8 @@ public class ChestData : MonoBehaviour
     [Header("Data")]
     public List<ItemData> inventory = new  List<ItemData>();
     public int space = 20;
-    public int scrapValue = 10;
-    public int polymerValue = 5;
+    public int scrapValue = 0;
+    public int polymerValue = 0;
     private bool opened = false;
 
     public void Initialise(List<ItemData> items, int scrapVal, int polymerVal)
@@ -40,5 +40,6 @@ public class ChestData : MonoBehaviour
         opened = true;
         HubManager.instance.polymers += polymerValue;
         HubManager.instance.scraps += scrapValue;
+        MenuManager.instance.UpdateUI();
     }
 }

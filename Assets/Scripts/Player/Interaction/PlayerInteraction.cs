@@ -64,7 +64,6 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         // If the player does not have i-frames remaining - take damage
         if (PlayerContainer.instance.immunity < 0)
         {
-            Debug.Log("Player was hit");
             PlayerEventManager.TriggerEvent(PlayerEventManager.Events.PlayerTakeDamage, context);
         }
     }
@@ -92,7 +91,10 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         PlayerContainer.instance.playerIsAlive = false;
         // Clear the inventory
         InventoryManager.instance.inventory = new List<ItemData>();
-        // Delete save data
+        // Delete save file
+        SaveManager.instance.DeleteSave();
+        // Put player in death menu
+        GameManager.instance.ChangeGameState(GameManager.GameState.DeathMenu);
     }
 
     #endregion

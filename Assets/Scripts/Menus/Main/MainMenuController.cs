@@ -18,11 +18,11 @@ public class MainMenuController : MonoBehaviour
         GameManager.instance.ChangeGameState(GameManager.GameState.MainMenu);
     }
 
-    public void Play()
+    public void Play(bool loadGame)
     {
         mainMenu.SetActive(false);
         loadingScreen.SetActive(true);  
-        SceneManager.LoadScene(gameSceneName);
+        GameManager.instance.StartGame(loadGame);
     }
 
     public void ExitGame()

@@ -15,7 +15,6 @@ public class PlayerInputManager : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(transform.root.gameObject);
     }
 
     void OnEnable()

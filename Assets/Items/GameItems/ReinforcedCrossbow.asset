@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a470e6b7fd8def202990156d4155de24, type: 3}
+  m_Name: ReinforcedCrossbow
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemName: Reinforced Crossbow
+  icon: {fileID: 564124380887655756, guid: 46b887bdabef0994ea3dd4691bfc23d6, type: 3}
+  rarity: 1
+  spawnWeight: 15
+  spawnBiomes: 
+  isUsable: 1
+  isWeapon: 1
+  useType: 2
+  useTime: 16
+  damage: 3
+  hitboxWidth: 0
+  hitboxHeight: 0
+  projectile: {fileID: 1833550530126203083, guid: 480c2c973a35acc9a92810fc6a429bdd, type: 3}
+  P_MAX_SPEED: 16
+  pdeceleration: 2

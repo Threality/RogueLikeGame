@@ -13,6 +13,7 @@ public class PlayerContainer : MonoBehaviour
     public int immunity;
     public bool playerIsAlive;
     public int useCooldown;
+    public GameObject player;
 
     private void Awake()
     {

@@ -24,4 +24,7 @@ public class EnemyData : ScriptableObject
     [Header("Spawn Essentials")]
     public float width;
     public float height;
+
+    [Header("Loot")]
+    public int polymerValue;
 }
