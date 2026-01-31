@@ -2,11 +2,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using Pathfinding;
 using System.Collections.Generic;
-using UnityEditor.Tilemaps;
 using System.Linq;
-using System.CodeDom.Compiler;
-using Unity.Collections;
-using NUnit.Framework.Constraints;
 
 public class WorldGenerator : MonoBehaviour
 {

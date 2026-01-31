@@ -24,6 +24,6 @@ MonoBehaviour:
   damage: 12
   hitboxWidth: 6
   hitboxHeight: 4
-  projectile: {fileID: 1833550530126203083, guid: 480c2c973a35acc9a92810fc6a429bdd, type: 3}
+  projectile: {fileID: 0}
   P_MAX_SPEED: 0
   pdeceleration: 0

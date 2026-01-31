@@ -3,12 +3,6 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
-/*
-Code==Done
-jigglephysics==extra
-mr fat computer guy =pleased
-*/
-
 public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInteractionActions
 {
     #region Setup

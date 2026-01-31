@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba1a8aaf66d633ffb8a6dac06f4eb96f, type: 3}
+  m_Name: UncommonStinger
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyData
+  enemyName: Stinger
+  prefab: {fileID: 3330753183850994660, guid: e9651c1161d3e686b9ee3849232d7d92, type: 3}
+  GraphicsPrefab: {fileID: 8534300588913172881, guid: 5a0601b6b9fbc3b9d9d1de88cd68c69e, type: 3}
+  moveSpeed: 3
+  acceleration: 2
+  damage: 1
+  MAX_HEALTH: 5
+  spawnWeight: 50
+  rarity: 1
+  aIType: 1
+  spawnBiomes: 00000000
+  width: 1
+  height: 1
+  polymerValue: 7

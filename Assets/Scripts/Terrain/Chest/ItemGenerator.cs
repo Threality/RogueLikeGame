@@ -11,11 +11,10 @@ public class ItemGenerator : MonoBehaviour
     {
         List<ItemData> items = new List<ItemData>();
         items.Add(GetRandomWeightedItem(difficulty));
-        items.Add(GetRandomWeightedItem(difficulty));
 
         for (int i = 0; i < 10; i++)
         {
-            if (Random.value > 0.65f) items.Add(GetRandomWeightedItem(difficulty));
+            if (Random.value < 0.1f) items.Add(GetRandomWeightedItem(difficulty));
         }
 
         return items;

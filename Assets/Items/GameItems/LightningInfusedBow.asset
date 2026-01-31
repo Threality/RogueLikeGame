@@ -17,8 +17,8 @@ MonoBehaviour:
   rarity: 2
   spawnWeight: 8
   spawnBiomes: 
-  isUsable: 0
-  isWeapon: 0
+  isUsable: 1
+  isWeapon: 1
   useType: 2
   useTime: 6
   damage: 3
