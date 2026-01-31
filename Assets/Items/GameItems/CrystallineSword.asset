@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Crystalline Sword
   icon: {fileID: 3888277995791209448, guid: ba7c35d0552e68f47acadc5639909271, type: 3}
   rarity: 3
-  spawnWeight: 10
+  spawnWeight: 6
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

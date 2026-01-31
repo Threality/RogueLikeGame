@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Reinforced Crossbow
   icon: {fileID: 564124380887655756, guid: 46b887bdabef0994ea3dd4691bfc23d6, type: 3}
   rarity: 1
-  spawnWeight: 15
+  spawnWeight: 40
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

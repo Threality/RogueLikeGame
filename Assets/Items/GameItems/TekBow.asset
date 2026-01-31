@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Tek Bow
   icon: {fileID: 5784878756200005403, guid: ad255e155802b524ab00c27645d0e247, type: 3}
   rarity: 3
-  spawnWeight: 5
+  spawnWeight: 6
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

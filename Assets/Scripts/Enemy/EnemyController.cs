@@ -51,7 +51,8 @@ public class EnemyController : MonoBehaviour
         // Store values with random variation
         data.moveSpeed *= Random.Range(0.9f, 1.1f);
         data.acceleration *= Random.Range(0.8f, 1.2f);
-        Instantiate(data.GraphicsPrefab, transform);
+        GameObject obj = Instantiate(data.GraphicsPrefab, transform);
+        obj.GetComponent<DirectionalSprites>().path = aIPath;
 
         // Find the player and set it as the target
         playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
@@ -68,6 +69,7 @@ public class EnemyController : MonoBehaviour
 
         // Set up other instance stats
         gameObject.GetComponent<EnemyInteraction>().Initialise(data, enemyManager);
+
 
         // Generate a transform to enable setting custom targets later
         GameObject temp = new GameObject("Enemy Path Target");

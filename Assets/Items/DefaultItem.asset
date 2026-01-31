@@ -19,7 +19,7 @@ MonoBehaviour:
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1
-  useType: 2
+  useType: 1
   useTime: 10
   damage: 2
   hitboxWidth: 3

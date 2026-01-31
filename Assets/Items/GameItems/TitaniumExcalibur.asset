@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Titanium Excalibur
   icon: {fileID: 7805349435793271047, guid: 5893e886c604de642adc77810c756f19, type: 3}
   rarity: 2
-  spawnWeight: 20
+  spawnWeight: 15
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

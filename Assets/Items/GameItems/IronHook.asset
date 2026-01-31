@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Iron Hook
   icon: {fileID: -8351286726646943348, guid: 035d0414eb6dc1c4eae36d2fe8ed2dac, type: 3}
   rarity: 0
-  spawnWeight: 20
+  spawnWeight: 80
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

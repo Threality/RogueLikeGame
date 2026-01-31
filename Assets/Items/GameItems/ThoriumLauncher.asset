@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Thorium Launcher
   icon: {fileID: -3525995668421806427, guid: 4772548290d3cc948bcc9393b10394ed, type: 3}
   rarity: 3
-  spawnWeight: 10
+  spawnWeight: 6
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

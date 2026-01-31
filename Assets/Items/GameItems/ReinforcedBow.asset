@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Reinforced Bow
   icon: {fileID: -7633922977297607636, guid: a39a5026a7a248c41b38ad9fafb92a6e, type: 3}
   rarity: 1
-  spawnWeight: 10
+  spawnWeight: 40
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

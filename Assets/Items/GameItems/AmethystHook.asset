@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Amethyst Hook
   icon: {fileID: -1845488067607100931, guid: 9b3912057df94ef46a076464af714b07, type: 3}
   rarity: 1
-  spawnWeight: 5
+  spawnWeight: 40
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

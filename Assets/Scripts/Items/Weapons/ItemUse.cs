@@ -10,6 +10,7 @@ public class ItemUse : MonoBehaviour
     public InventoryManager inventoryManager;
     public LayerMask enemyLayer;
     public Transform projectileParent;
+    public WeaponVisuals weaponVisuals;
 
     [Header("Ladders")]
     public Tilemap ladderMap;
@@ -98,6 +99,8 @@ public class ItemUse : MonoBehaviour
                 enemyInteraction.TakeDamage(data.damage);
             }
         }
+
+        weaponVisuals.Swing(data.useTime * 0.02f);
     }
 
     private void UseGun(ItemData data)

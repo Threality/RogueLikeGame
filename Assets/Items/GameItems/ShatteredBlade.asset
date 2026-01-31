@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Shattered Blade
   icon: {fileID: -8356674363368979146, guid: 793ac4f41e0a238489fbc5eec7bdba06, type: 3}
   rarity: 3
-  spawnWeight: 5
+  spawnWeight: 3
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

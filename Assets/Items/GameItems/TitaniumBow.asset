@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Titanium Bow
   icon: {fileID: -2295477384198112477, guid: 6d96006005cc0f149b19755912bdc869, type: 3}
   rarity: 1
-  spawnWeight: 20
+  spawnWeight: 40
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

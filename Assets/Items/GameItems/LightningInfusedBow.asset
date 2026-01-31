@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Lightning Infused Bow
   icon: {fileID: 7360205384184295941, guid: 4f5dfaa761755eb41a56f4f642862e8b, type: 3}
   rarity: 2
-  spawnWeight: 8
+  spawnWeight: 15
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

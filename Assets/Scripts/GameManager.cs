@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,7 +9,6 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     // Data
-    public float  deathTimer = 0;
     public float difficultyTimer = 0;
     public float difficultyMult = 0.01f;
     public bool loadSave = true;
@@ -75,16 +75,6 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         if (curState == GameState.MainMenu) return;
-        
-        if (!PlayerContainer.instance.playerIsAlive)
-        {
-            deathTimer += Time.deltaTime;
-        }
-
-        if (deathTimer > 1)
-        {
-            SceneManager.LoadScene("MainMenu");
-        }
 
         difficultyTimer += difficultyTimer * difficultyMult * Time.deltaTime + Time.deltaTime / 300f;
     }
@@ -127,10 +117,13 @@ public class GameManager : MonoBehaviour
             case GameState.LoadingMenu:
                 curState = GameState.LoadingMenu;
                 MenuManager.instance.EnterLoading();
+                Time.timeScale = 0f;
                 break;
             case GameState.DeathMenu:
                 curState = GameState.DeathMenu;
                 MenuManager.instance.EnterDeath();
+                QueueDeathToMain();
+                Time.timeScale = 0f;
                 break;
             case GameState.MainMenu:
                 curState = GameState.MainMenu;
@@ -138,6 +131,7 @@ public class GameManager : MonoBehaviour
             case GameState.LaunchMenu:
                 curState = GameState.LaunchMenu;
                 MenuManager.instance.EnterLaunch();
+                Time.timeScale = 0f;
                 break;
         }
     }
@@ -189,5 +183,11 @@ public class GameManager : MonoBehaviour
 
         Vector2 direction = mouseWorldLocation - PlayerContainer.instance.player.transform.position;
         return direction.normalized;
+    }
+
+    private IEnumerator QueueDeathToMain()
+    {
+        yield return new WaitForSecondsRealtime(1f);
+        SceneManager.LoadScene("Main Menu");
     }
 }

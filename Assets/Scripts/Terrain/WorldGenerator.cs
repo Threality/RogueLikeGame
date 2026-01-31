@@ -15,6 +15,8 @@ public class WorldGenerator : MonoBehaviour
     public TilesetOrganiser tilesetOrganiser;
     public ItemGenerator itemGenerator;
     public GameObject loadingScreen;
+    public Transform worldParent;
+    public CameraFollow mainCamera;
     public TileBase grassTile;
     public TileBase dirtTile;
     public TileBase stoneTile;
@@ -110,10 +112,12 @@ public class WorldGenerator : MonoBehaviour
         GameManager.instance.ChangeGameState(GameManager.GameState.Playing);
         ladderMap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
         player.transform.position = surfaceHeightCache.Count() > 0 ? new Vector2(0, surfaceHeightCache[worldWidth / 2] - worldHeight / 2 + 1) : new Vector3(0, 0, 0);
+        mainCamera.transform.position = surfaceHeightCache.Count() > 0 ? new Vector2(0, surfaceHeightCache[worldWidth / 2] - worldHeight / 2 + 1) : new Vector3(0, 0, 0);
         PlayerContainer.instance.health = PlayerContainer.instance.MAX_HEALTH;
         GameManager.instance.difficultyTimer = 0f;
         if (loadSave) SaveManager.instance.LoadGame();
         MenuManager.instance.UpdateUI();
+        mainCamera.CalculateBounds();
     }
 
 
@@ -414,6 +418,35 @@ public class WorldGenerator : MonoBehaviour
 
 
     #endregion
+    #region Borders
+
+
+    public void GenerateWorldBorders()
+    {
+        GameObject borders = new GameObject("World Border");
+        borders.transform.parent = worldParent;
+        int thickness = 5;
+
+        CreateBorderPiece(borders, "Left Border", new Vector2(-thickness / 2f -0.5f, worldHeight / 2f), new Vector2(thickness, worldHeight + 20));
+        CreateBorderPiece(borders, "Right Border", new Vector2(worldWidth + (thickness / 2) - 0.5f, worldHeight / 2f), new Vector2(thickness, worldHeight + 20));
+        CreateBorderPiece(borders, "Upper Border", new Vector2(worldWidth / 2f, worldHeight + 10), new Vector2(worldWidth + 20, thickness));
+        CreateBorderPiece(borders, "Lower Border", new Vector2(worldWidth / 2f, -thickness / 2f - 0.5f), new Vector2(worldWidth + 20, thickness));
+    }
+
+    private void CreateBorderPiece(GameObject parent, string name, Vector2 pos, Vector2 size)
+    {
+        GameObject obj = new GameObject(name);
+        obj.transform.parent = parent.transform;
+        obj.transform.position = pos;
+
+        BoxCollider2D collider = obj.AddComponent<BoxCollider2D>();
+        collider.size = size;
+
+        obj.layer = LayerMask.NameToLayer("Obstacle");
+    }
+
+
+    #endregion
     #region Structures
 
 
@@ -503,7 +536,6 @@ public class WorldGenerator : MonoBehaviour
     public float GameLocationToTileTemperature(GameObject obj)
     {
         int posX = Mathf.RoundToInt(obj.transform.position.x + worldWidth / 2);
-        Debug.Log(posX);
         return temperatureCache[posX];
     }
 

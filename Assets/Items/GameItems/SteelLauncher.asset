@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Steel Launcher
   icon: {fileID: -748899362701166130, guid: 4748793e3e4dac44dab58a28527a991f, type: 3}
   rarity: 1
-  spawnWeight: 15
+  spawnWeight: 30
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

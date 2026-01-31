@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Lightning Infused Launcher
   icon: {fileID: 3318662282897206438, guid: b7c438eafab64304586d3a633c9674f2, type: 3}
   rarity: 2
-  spawnWeight: 15
+  spawnWeight: 10
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Ravens Sword
   icon: {fileID: 439761065919223017, guid: e9cf4bb69bfa5004b86040f24ea6ef95, type: 3}
   rarity: 2
-  spawnWeight: 10
+  spawnWeight: 15
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

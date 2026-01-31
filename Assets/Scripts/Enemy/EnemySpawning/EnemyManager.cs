@@ -138,15 +138,15 @@ public class EnemyManager : MonoBehaviour
                     break;
                 case GameManager.Rarity.Epic:
                     if (difficulty < 2.5f) curWeight /= 3f;
-                    if (difficulty >= 2.5f) curWeight *= 2f;
+                    else curWeight *=  difficulty / 5f;
                     break;
                 case GameManager.Rarity.Legendary:
-                    if (difficulty < 2f) curWeight = 0f;
-                    else curWeight *=  difficulty / 3;
+                    if (difficulty < 3f) curWeight = 0f;
+                    else curWeight *=  difficulty / 10f;
                     break;
                 case GameManager.Rarity.Mythical:
-                    if (difficulty < 3f) curWeight = 0f;
-                    else curWeight *= difficulty / 6;
+                    if (difficulty < 4f) curWeight = 0f;
+                    else curWeight *= difficulty / 15f;
                     break;
             }
 

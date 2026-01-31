@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Iron Shortsword
   icon: {fileID: -3548556048115797581, guid: b641e03f619e1b94eb70a6c54b2efb50, type: 3}
   rarity: 0
-  spawnWeight: 25
+  spawnWeight: 80
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

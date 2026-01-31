@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Crossbow
   icon: {fileID: -3049289329323023382, guid: 5eb07540c246f304da926acd9c5bfb17, type: 3}
   rarity: 0
-  spawnWeight: 20
+  spawnWeight: 80
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

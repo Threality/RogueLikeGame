@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Iron Launcher
   icon: {fileID: 6008646692265800806, guid: 75f43f8408497df48a26ea7d7df90a22, type: 3}
   rarity: 0
-  spawnWeight: 20
+  spawnWeight: 60
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1

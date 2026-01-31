@@ -39,7 +39,10 @@ public class InformationDisplayer : MonoBehaviour
         // Exit early if additional data is not required
         if (!(data.isUsable && data.isWeapon)) return;
 
-        displaySlots[1].text = data.damage.ToString();
+        displaySlots[1].text = "Damage: " + data.damage.ToString();
+        string useType = data.useType == GameManager.UseType.Gun ? "Ranged" : "Melee";
+        displaySlots[2].text = "Weapon Type: " + useType;
+        displaySlots[3].text = "Use Time: " + data.useTime;
     }
 
     public void ClearSlots()

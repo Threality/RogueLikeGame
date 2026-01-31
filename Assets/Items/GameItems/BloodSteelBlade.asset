@@ -15,7 +15,7 @@ MonoBehaviour:
   itemName: Blood Steel Blade
   icon: {fileID: 7216809120891807888, guid: 790d530f99011404da2ab885126a1fa4, type: 3}
   rarity: 3
-  spawnWeight: 10
+  spawnWeight: 6
   spawnBiomes: 
   isUsable: 1
   isWeapon: 1
