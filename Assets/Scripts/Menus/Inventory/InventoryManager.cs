@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
+using System.Linq;
 
 public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryActions
 {
@@ -58,6 +58,19 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
 
     void Start()
     {
+        if (inventorySlots == null || inventorySlots.Length == 0)
+        {
+            InitialiseSlots();
+        }
+    }
+
+
+    #endregion
+    #region Item Handling
+
+
+    public void InitialiseSlots()
+    {
         for (int i = 0; i < space; i++)
         {
             // Instantiate object
@@ -96,11 +109,6 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
         PlayerInputManager.Instance.playerControls.Inventory.Enable();
         PlayerInputManager.Instance.playerControls.Inventory.SetCallbacks(this);
     }
-
-
-    #endregion
-    #region Item Handling
-
 
     public bool Add(ItemData item)
     {
@@ -180,6 +188,11 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
 
     private void UpdateUI()
     {
+        if (inventorySlots == null || inventorySlots.Length == 0)
+        {
+            InitialiseSlots();
+        }
+
         // Update all inventorySlots
         for (int i = 0; i < space; i++)
         {

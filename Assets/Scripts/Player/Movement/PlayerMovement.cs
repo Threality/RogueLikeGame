@@ -119,6 +119,8 @@ public class PlayerMovement : MonoBehaviour, InputSystem_Actions.IPlayerMovement
 
     public void OnJump(InputAction.CallbackContext context)
     {
+        if (!context.performed) return;
+        
         // If the player is currently or was recently
         if (coyoteTime >= 0 || ladderCheck.IsTouchingLadder())
         {

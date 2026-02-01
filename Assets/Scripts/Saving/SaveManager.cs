@@ -25,6 +25,11 @@ public class SaveManager : MonoBehaviour
         save.craftingLevel = HubManager.instance.craftingLevel;
         save.miningLevel = HubManager.instance.miningLevel;
 
+        save.hubInventoryItems = new List<string>();
+        save.playerInventoryItems = new List<string>();
+
+        save.galacticDepth = GameManager.instance.GetGalacticDepth();
+
         foreach (ItemData item in HubManager.instance.hubChest.inventory)
         {
             if (item != null) save.hubInventoryItems.Add(item.itemName);
@@ -62,6 +67,8 @@ public class SaveManager : MonoBehaviour
 
         hub.craftingLevel = save.craftingLevel;
         hub.miningLevel = save.miningLevel;
+
+        GameManager.instance.SetGalacticDepth(save.galacticDepth + 1);
 
         InventoryManager.instance.inventory = new List<ItemData>();
         foreach (String itemName in save.playerInventoryItems)

@@ -7,7 +7,7 @@ public class BiomeBackground : MonoBehaviour
 
     private List<SpriteRenderer> renderers = new List<SpriteRenderer>();
 
-    private void Awake()
+    private void Start()
     {
         renderers.AddRange(GetComponentsInChildren<SpriteRenderer>());
     }

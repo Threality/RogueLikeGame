@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class BackgroundLayer : MonoBehaviour
@@ -10,7 +11,7 @@ public class BackgroundLayer : MonoBehaviour
     private Vector3 startPos;
     private float length;
 
-    private void Start()
+    private void Awake()
     {
         mainCamera = Camera.main.transform;
         startPos = transform.position;

@@ -10,15 +10,16 @@ public class BackgroundManager : MonoBehaviour
     public float fadeRate = 2f;
     
     private BiomeBackground[] backgrounds;
-    private BiomeBackground currentBackground;
 
     private void Start()
-    {
+    {        
         backgrounds = GetComponentsInChildren<BiomeBackground>();
     }
 
     private void Update()
     {
+        if (GameManager.instance.GetGameState() != GameManager.GameState.Playing) return;
+        
         HandleBiomeTransition();
     }
 

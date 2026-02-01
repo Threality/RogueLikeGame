@@ -114,6 +114,8 @@ public class HubManager : MonoBehaviour
             craftingLevel++;
             MenuManager.instance.AlertUser("Upgraded crafting!");
             MenuManager.instance.UpdateUI();
+            WorkbenchManager.instance.CloseWorkbench();
+            WorkbenchManager.instance.OpenWorkbench();
         }
         else
         {

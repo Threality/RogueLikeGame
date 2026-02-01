@@ -122,7 +122,8 @@ public class GameManager : MonoBehaviour
             case GameState.DeathMenu:
                 curState = GameState.DeathMenu;
                 MenuManager.instance.EnterDeath();
-                QueueDeathToMain();
+                StopAllCoroutines();
+                StartCoroutine(QueueDeathToMain());
                 Time.timeScale = 0f;
                 break;
             case GameState.MainMenu:
@@ -161,6 +162,11 @@ public class GameManager : MonoBehaviour
         return galacticDepth;
     }
 
+    public void SetGalacticDepth(int val)
+    {
+        galacticDepth = val;
+    }
+
     public void IncrementGalaticDepth()
     {
         galacticDepth++;
@@ -188,6 +194,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator QueueDeathToMain()
     {
         yield return new WaitForSecondsRealtime(1f);
-        SceneManager.LoadScene("Main Menu");
+        SceneManager.LoadScene("MainMenu");
     }
 }

@@ -3,8 +3,6 @@ using UnityEngine.Tilemaps;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using UnityEditor.SpeedTree.Importer;
-using Unity.Collections;
 
 public class TilesetOrganiser : MonoBehaviour
 {

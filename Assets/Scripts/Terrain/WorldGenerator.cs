@@ -3,6 +3,7 @@ using UnityEngine.Tilemaps;
 using Pathfinding;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class WorldGenerator : MonoBehaviour
 {
@@ -70,6 +71,8 @@ public class WorldGenerator : MonoBehaviour
     public bool generateBackground = true;
 
     [Header("Enemies")]
+    public Transform enemyContainer;
+    public EnemyManager enemyManager;
     public bool generateEnemyMap = true;
 
     [Header("Structures")]
@@ -128,6 +131,8 @@ public class WorldGenerator : MonoBehaviour
     [ContextMenu("Generate World")]
     public void GenerateWorld()
     {
+        ClearAllChests();
+        ClearAllEnemies();
         GenerateInitialHeightMap();
         GenerateInitialTerrain();
         if (generateWormCaves) GenerateWormCaves();
@@ -343,7 +348,7 @@ public class WorldGenerator : MonoBehaviour
         tilemapCollider2D.enabled = false;
         tilemapCollider2D.enabled = true;
         Physics2D.SyncTransforms();
-
+        
         // Scan the graph for valid route
         graph.Scan();
 
@@ -459,6 +464,8 @@ public class WorldGenerator : MonoBehaviour
             int offset = Random.Range(0, segmentSize);
             int xCoord = segmentSize * i + offset;
 
+            if (xCoord < worldWidth / 2f  + 10 && xCoord > worldWidth / 2f - 10f) continue;
+
             List<int> yCoords = new List<int>();
             for (int j = 0; j < worldHeight; j++) yCoords.Add(j);
             Shuffle(yCoords);
@@ -531,6 +538,24 @@ public class WorldGenerator : MonoBehaviour
             if (!tilemap.HasTile(new Vector3Int(coords.x + i, coords.y - 1, 0))) return false;
         }
         return true;
+    }
+
+    public void ClearAllChests()
+    {
+        for (int i = chestContainer.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = chestContainer.GetChild(i).gameObject;
+            DestroyImmediate(child);
+        }
+    }
+
+    public void ClearAllEnemies()
+    {
+        for (int i = enemyContainer.childCount - 1; i >= 0; i--)
+        {
+            GameObject child = enemyContainer.GetChild(i).gameObject;
+            enemyManager.RemoveEnemy(child);
+        }
     }
 
     public float GameLocationToTileTemperature(GameObject obj)
