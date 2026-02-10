@@ -13,16 +13,20 @@ public class BackgroundLayer : MonoBehaviour
 
     private void Awake()
     {
+        // Get important variables
         mainCamera = Camera.main.transform;
         startPos = transform.position;
 
+        // Initialise background segments
         for (int i = -15; i <= 15; i++)
         {
+            // Place the flush to each other
             GameObject obj = Instantiate(background, transform);
             length = obj.GetComponent<SpriteRenderer>().bounds.size.x;
             obj.transform.position = new Vector2(i * length, mainCamera.position.y);
         }
 
+        // Store the length of each sprite
         SpriteRenderer render = GetComponentInChildren<SpriteRenderer>();
         if (render != null)
         {
@@ -32,11 +36,14 @@ public class BackgroundLayer : MonoBehaviour
 
     private void LateUpdate()
     {
+        // Work out what changes need to occur
         float dist = mainCamera.position.x * parallaxFactor;
         float temp = mainCamera.position.x * (1 - parallaxFactor);
 
+        // Move by the distance factor
         transform.position = new Vector3(startPos.x + dist, mainCamera.position.y, transform.position.z);
 
+        // Check if the background needs to be moved
         if (temp > startPos.x + length) startPos.x += length;
         else if (temp < startPos.x - length) startPos.x -= length;
     }

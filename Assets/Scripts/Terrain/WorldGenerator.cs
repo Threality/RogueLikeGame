@@ -107,19 +107,34 @@ public class WorldGenerator : MonoBehaviour
 
     public void NewWorld(bool loadSave)
     {
+        // Save the game
         if (!loadSave) SaveManager.instance.SaveGame();
+
+        // Enter loading screen
         GameManager.instance.ChangeGameState(GameManager.GameState.LoadingMenu);
+
+        // Generate world and increase difficulty
         if (randomSeed) seed = Random.Range(0, 1_000_000);
         GameManager.instance.IncrementGalaticDepth();
         if (generateWorld) GenerateWorld();
+
+        // Enter playing state
         GameManager.instance.ChangeGameState(GameManager.GameState.Playing);
+
+        // Move everything to the correct starting location and stats
         ladderMap.transform.position = new Vector3(-worldWidth / 2, -worldHeight / 2, 0);
         player.transform.position = surfaceHeightCache.Count() > 0 ? new Vector2(0, surfaceHeightCache[worldWidth / 2] - worldHeight / 2 + 1) : new Vector3(0, 0, 0);
         mainCamera.transform.position = surfaceHeightCache.Count() > 0 ? new Vector2(0, surfaceHeightCache[worldWidth / 2] - worldHeight / 2 + 1) : new Vector3(0, 0, 0);
         PlayerContainer.instance.health = PlayerContainer.instance.MAX_HEALTH;
         GameManager.instance.difficultyTimer = 0f;
+
+        // Load stats
         if (loadSave) SaveManager.instance.LoadGame();
+
+        // Update the UI
         MenuManager.instance.UpdateUI();
+
+        // Calculate camera bounds
         mainCamera.CalculateBounds();
     }
 
@@ -131,13 +146,22 @@ public class WorldGenerator : MonoBehaviour
     [ContextMenu("Generate World")]
     public void GenerateWorld()
     {
+        // Reset entities
         ClearAllChests();
         ClearAllEnemies();
+
+        // Generate terrain
         GenerateInitialHeightMap();
         GenerateInitialTerrain();
+
+        // Generate caves
         if (generateWormCaves) GenerateWormCaves();
         if (generateIsolatedCaves) GenerateIsolatedCaves();
+
+        // Generate structures
         if (generateStructures) GenerateStructures();
+
+        // Decorate map
         tilesetOrganiser.ProcessMap(tilemap);
         if (generateBackground)
         {
@@ -146,14 +170,23 @@ public class WorldGenerator : MonoBehaviour
         }
         if (generateBlackout) GenerateBlackout();
         if (generateBackgroundBlackout) GenerateBackgroundBlackout();
+
+        // Scan enemies A Star Graph for pathing
         if (generateEnemyMap) SetupEnemyGrid();
+
+        // Reset ladder for player interaction
         ladderMap.ClearAllTiles();
+
+        // Generate borders
+        GenerateWorldBorders();
     }
 
     private void GenerateInitialHeightMap()
     {
+        // Set up height cache for other parts of the program
         surfaceHeightCache = new int[worldWidth];
 
+        // Set the initial suface height to an amplified and zoomed perlin value
         for (int x = 0; x < worldWidth; x++)
         {
             float heightNoise = Mathf.PerlinNoise((x + seed + 1000) * initialSurfaceScale, seed + 1000);
@@ -428,25 +461,33 @@ public class WorldGenerator : MonoBehaviour
 
     public void GenerateWorldBorders()
     {
+        // Create world border 
         GameObject borders = new GameObject("World Border");
         borders.transform.parent = worldParent;
         int thickness = 5;
 
+        // Create each wall
         CreateBorderPiece(borders, "Left Border", new Vector2(-thickness / 2f -0.5f, worldHeight / 2f), new Vector2(thickness, worldHeight + 20));
-        CreateBorderPiece(borders, "Right Border", new Vector2(worldWidth + (thickness / 2) - 0.5f, worldHeight / 2f), new Vector2(thickness, worldHeight + 20));
+        CreateBorderPiece(borders, "Right Border", new Vector2(worldWidth + (thickness / 2f) - 0.5f, worldHeight / 2f), new Vector2(thickness, worldHeight + 20));
         CreateBorderPiece(borders, "Upper Border", new Vector2(worldWidth / 2f, worldHeight + 10), new Vector2(worldWidth + 20, thickness));
         CreateBorderPiece(borders, "Lower Border", new Vector2(worldWidth / 2f, -thickness / 2f - 0.5f), new Vector2(worldWidth + 20, thickness));
+        
+        // Set position to the middle of the map
+        borders.transform.position = new Vector2(-worldWidth / 2f, -worldHeight / 2f);
     }
 
     private void CreateBorderPiece(GameObject parent, string name, Vector2 pos, Vector2 size)
     {
+        // Create a new wall
         GameObject obj = new GameObject(name);
         obj.transform.parent = parent.transform;
         obj.transform.position = pos;
 
+        // Ensure the player can collide with it
         BoxCollider2D collider = obj.AddComponent<BoxCollider2D>();
         collider.size = size;
 
+        // Set it to be an obstacle
         obj.layer = LayerMask.NameToLayer("Obstacle");
     }
 
@@ -457,15 +498,20 @@ public class WorldGenerator : MonoBehaviour
 
     private void GenerateStructures()
     {
+        // Get the amount of x room each chest needs to be evenly spaced
         int segmentSize = Mathf.FloorToInt(worldWidth / numChests);
 
+        // Attempt to place the maximum amount of allowed chests
         for (int i = 0; i < numChests; i++)
         {
+            // Allow each chest to be randomly moved throughout its zone
             int offset = Random.Range(0, segmentSize);
             int xCoord = segmentSize * i + offset;
 
+            // If it is too close to the hub - go to the next place
             if (xCoord < worldWidth / 2f  + 10 && xCoord > worldWidth / 2f - 10f) continue;
 
+            // Shuffle the y coordinates so they are checked randomly
             List<int> yCoords = new List<int>();
             for (int j = 0; j < worldHeight; j++) yCoords.Add(j);
             Shuffle(yCoords);
@@ -474,8 +520,11 @@ public class WorldGenerator : MonoBehaviour
             {
                 if (StructureFits(2, 1, new Vector2Int(xCoord, yCoord)))
                 {
+                    // Place chest
                     GameObject chest = Instantiate(chestPrefab, chestContainer);
                     chest.transform.position = new Vector3(xCoord - (worldWidth / 2) + 1, yCoord - (worldHeight / 2) + 1, 0);
+
+                    // Generate loot
                     chest.GetComponent<ChestData>().Initialise(itemGenerator.GenerateRandomChestLoot(GameManager.instance.GetDifficulty(chest)),
                     Mathf.FloorToInt(Random.Range(2,7) * GameManager.instance.GetDifficulty(chest)),
                     Mathf.FloorToInt(Random.Range(1,5) * GameManager.instance.GetDifficulty(chest)));
@@ -484,6 +533,7 @@ public class WorldGenerator : MonoBehaviour
             }
         }
 
+        // Clear space for the hub
         int yPos = surfaceHeightCache[Mathf.FloorToInt(worldWidth / 2)];
         for (int i = -7; i < 7; i++)
         {
@@ -492,7 +542,27 @@ public class WorldGenerator : MonoBehaviour
                 tilemap.SetTile(new Vector3Int(i + worldWidth / 2, j, 0), null);
             }
         }
+
+        // Move the hub to the cleared location
         hub.transform.position = new Vector3(3, yPos - worldHeight / 2 + 4, 0);
+    }
+    public bool StructureFits(int width, int height, Vector2Int coords)
+    {
+        // Check there are no tiles where it will be placed
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j <= height; j++)
+            {
+                if (tilemap.HasTile(new Vector3Int(coords.x + i, coords.y + j, 0))) return false;
+            }
+        }
+
+        // Check there is floor where under all tiles
+        for (int i = 0; i < width; i++)
+        {
+            if (!tilemap.HasTile(new Vector3Int(coords.x + i, coords.y - 1, 0))) return false;
+        }
+        return true;
     }
 
 
@@ -523,25 +593,10 @@ public class WorldGenerator : MonoBehaviour
         }
     }
 
-    public bool StructureFits(int width, int height, Vector2Int coords)
-    {
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j <= height; j++)
-            {
-                if (tilemap.HasTile(new Vector3Int(coords.x + i, coords.y + j, 0))) return false;
-            }
-        }
-
-        for (int i = 0; i < width; i++)
-        {
-            if (!tilemap.HasTile(new Vector3Int(coords.x + i, coords.y - 1, 0))) return false;
-        }
-        return true;
-    }
 
     public void ClearAllChests()
     {
+        // Remove all chest game objects
         for (int i = chestContainer.childCount - 1; i >= 0; i--)
         {
             GameObject child = chestContainer.GetChild(i).gameObject;
@@ -551,6 +606,7 @@ public class WorldGenerator : MonoBehaviour
 
     public void ClearAllEnemies()
     {
+        // Remove all enemy game objects
         for (int i = enemyContainer.childCount - 1; i >= 0; i--)
         {
             GameObject child = enemyContainer.GetChild(i).gameObject;
@@ -559,7 +615,7 @@ public class WorldGenerator : MonoBehaviour
     }
 
     public float GameLocationToTileTemperature(GameObject obj)
-    {
+    { 
         int posX = Mathf.RoundToInt(obj.transform.position.x + worldWidth / 2);
         return temperatureCache[posX];
     }
