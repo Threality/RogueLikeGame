@@ -136,6 +136,8 @@ public class WorldGenerator : MonoBehaviour
 
         // Calculate camera bounds
         mainCamera.CalculateBounds();
+
+        Time.timeScale = 1f;
     }
 
 

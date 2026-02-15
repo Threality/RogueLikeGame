@@ -35,8 +35,10 @@ public class ChestData : MonoBehaviour
 
     public void Open()
     {
+        // Only give rewards the first time
         if (opened) return;
 
+        // Mark as opened and give rewards
         opened = true;
         HubManager.instance.polymers += polymerValue;
         HubManager.instance.scraps += scrapValue;

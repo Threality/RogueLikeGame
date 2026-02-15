@@ -48,16 +48,22 @@ public class ItemUse : MonoBehaviour
 
     public bool UseLadder()
     {
+        // Get the world location of the mouse
         Vector3 mouseScreenPos = Mouse.current.position.ReadValue();
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(mouseScreenPos);
 
+        // Check distance is less than the max
         float distance = Vector2.Distance(transform.position, mousePos);
         if (distance > 10f) return false;
 
+        // Find the location on the ladder map
         Vector3Int cellPos = ladderMap.WorldToCell(mousePos);
 
+        // Check there is a gap
         if (ladderMap.HasTile(cellPos)) return false;
         if (groundMap.HasTile(cellPos)) return false;
+
+        // Ensure it is supported by something else
         if (backgroundMap.HasTile(cellPos)
          || ladderMap.HasTile(cellPos + Vector3Int.down)
          || groundMap.HasTile(cellPos + Vector3Int.down))

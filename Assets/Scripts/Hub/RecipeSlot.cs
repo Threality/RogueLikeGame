@@ -35,6 +35,7 @@ public class RecipeSlot : MonoBehaviour
         else icon.sprite = data.output.icon;
         icon.enabled = true;
 
+        // Display text
         itemName.text = data.name;
         ingredient1.text = data.requiredMaterials[0].ToString()+ ". Quantity: " + data.materialQuantities[0].ToString();
         if (data.requiredMaterials.Count > 1) ingredient2.text = data.requiredMaterials[1].ToString()+ ". Quantity: " + data.materialQuantities[1].ToString();

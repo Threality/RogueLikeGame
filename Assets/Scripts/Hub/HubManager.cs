@@ -38,8 +38,10 @@ public class HubManager : MonoBehaviour
 
     private void Update()
     {
+        // Increment mining progress
         miningProgress += miningLevel * Time.deltaTime * 2;
 
+        // Increase scrap if enough progress has been made
         if (miningProgress >= 1)
         {
             miningProgress--;
@@ -62,6 +64,7 @@ public class HubManager : MonoBehaviour
 
     public List<RecipeData> GetAvailableRecipes()
     {
+        // Get all recipes the player can craft
         return recipes
             .Where(x => x.requiredCraftingLevel <= craftingLevel)
             .ToList();
@@ -84,20 +87,24 @@ public class HubManager : MonoBehaviour
 
     public void CraftItem(RecipeData recipe)
     {
+        // Check the player has enough resources
         for (int i = 0; i < recipe.requiredMaterials.Count; i++)
         {
             if (!HasSufficient(recipe.requiredMaterials[i], recipe.materialQuantities[i]))
             {
+                // Tell the user why nothing happened
                 MenuManager.instance.AlertUser("Not enough resources");
                 return;
             }
         }
 
+        // Take away the resources
         for (int i = 0; i < recipe.requiredMaterials.Count; i++)
         {
             AddMaterial(recipe.requiredMaterials[i], recipe.materialQuantities[i] * -1);
         }
 
+        // Add the material crafted to the hub
         if (recipe.isMaterial)
         {
             AddMaterial(recipe.material, recipe.outputQuantity);
@@ -110,8 +117,11 @@ public class HubManager : MonoBehaviour
     {
         if (plastic >= GetCraftingUpgradeCost())
         {
+            // Increment level and charge mats
             plastic -= (int) GetCraftingUpgradeCost();
             craftingLevel++;
+            
+            // Tell the user and update UI
             MenuManager.instance.AlertUser("Upgraded crafting!");
             MenuManager.instance.UpdateUI();
             WorkbenchManager.instance.CloseWorkbench();
@@ -119,6 +129,7 @@ public class HubManager : MonoBehaviour
         }
         else
         {
+            // Tell the user they dont have enough materials
             MenuManager.instance.AlertUser("Not enough plastic!");
         }
     }
@@ -127,13 +138,17 @@ public class HubManager : MonoBehaviour
     {
         if (plastic >= GetMiningUpgradeCost())
         {
+            // Increment level and charge mats
             plastic -= (int) GetMiningUpgradeCost();
             miningLevel++;
+
+            // Alert user
             MenuManager.instance.AlertUser("Upgraded drill!");
             MenuManager.instance.UpdateUI();
         }
         else
         {
+            // Give feedback
             MenuManager.instance.AlertUser("Not enough plastic!");
         }
     }
