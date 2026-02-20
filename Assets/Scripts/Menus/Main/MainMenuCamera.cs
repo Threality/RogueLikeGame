@@ -18,6 +18,7 @@ public class MainMenuCamera : MonoBehaviour
 
     private void Awake()
     {
+        // Start in a random position with a random destination
         rb.position = new Vector3(Random.Range(-400, 400), Random.Range(0, -200), 0);
         destination = new Vector2(Random.Range(-400, 400), Random.Range(0, -200));
     }
@@ -25,12 +26,15 @@ public class MainMenuCamera : MonoBehaviour
 
     void Update()
     {
+        // Get the direction to travel in
         Vector2 direction = destination - (Vector2) transform.position;
         Vector2 normDirection = direction.normalized;
         
+        // Adjust velocity to move in correct direction
         rb.linearVelocityX = Mathf.Lerp(rb.linearVelocityX, maxSpeed * normDirection.x, acceleration * Time.deltaTime);
         rb.linearVelocityY = Mathf.Lerp(rb.linearVelocityY, maxSpeed * normDirection.y, acceleration * Time.deltaTime);
 
+        // Keep camera constantly moving in varied directions
         if (direction.magnitude < 0.5f || Random.value < dirChangeProb)
         {
             destination = new Vector2(Random.Range(-400, 400), Random.Range(0, -200));

@@ -3,7 +3,6 @@ using UnityEngine;
 public class MainMenuController : MonoBehaviour
 {
     [Header("References")]
-    public string gameSceneName;
     public GameObject mainMenu;
     public GameObject loadingScreen;
 

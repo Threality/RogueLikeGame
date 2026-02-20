@@ -79,6 +79,7 @@ public class MenuManager : MonoBehaviour
     public void EnterDeath()
     {
         deathUI.SetActive(true);
+        Time.timeScale = 0f;
     }
 
     public void EnterLaunch()

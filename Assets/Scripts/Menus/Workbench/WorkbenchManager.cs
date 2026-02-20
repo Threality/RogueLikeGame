@@ -7,9 +7,6 @@ using System.Collections;
 public class WorkbenchManager : MonoBehaviour
 {
     public static WorkbenchManager instance;
-    
-    [Header("Data")]
-    public int space = 5;
 
     [Header("References")]
     public WorldGenerator worldGenerator;
@@ -51,11 +48,14 @@ public class WorkbenchManager : MonoBehaviour
 
     public void AttemptLaunch()
     {
+        // Check the player has the required resources
         if (HubManager.instance.blackSteel < HubManager.instance.GetQuota())
         {
             MenuManager.instance.AlertUser("You do not have enough steel!");
             return;
         }
+
+        // Launch
         GameManager.instance.ChangeGameState(GameManager.GameState.LaunchMenu);
         Time.timeScale = 0f;
     }

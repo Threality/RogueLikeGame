@@ -15,6 +15,7 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame()
     {
+        // Create the save data
         SaveGameData save = new SaveGameData();
 
         save.scraps = HubManager.instance.scraps;
@@ -30,6 +31,7 @@ public class SaveManager : MonoBehaviour
 
         save.galacticDepth = GameManager.instance.GetGalacticDepth();
 
+        // Add item names
         foreach (ItemData item in HubManager.instance.hubChest.inventory)
         {
             if (item != null) save.hubInventoryItems.Add(item.itemName);
@@ -40,6 +42,7 @@ public class SaveManager : MonoBehaviour
             if (item != null) save.playerInventoryItems.Add(item.itemName);
         }
 
+        // Write to json
         string json = JsonUtility.ToJson(save, true);
         string path = Application.persistentDataPath + "/savefile.json";
         File.WriteAllText(path, json);
@@ -49,6 +52,7 @@ public class SaveManager : MonoBehaviour
 
     public void LoadGame()
     {
+        // Attempt to find save data
         string path = Application.persistentDataPath + "/savefile.json";
         if (!File.Exists(path))
         {
@@ -56,9 +60,11 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
+        // Load json
         string json = File.ReadAllText(path);
         SaveGameData save = JsonUtility.FromJson<SaveGameData>(json);
 
+        // Load data back into the game
         HubManager hub = HubManager.instance;
         hub.scraps = save.scraps;
         hub.polymers = save.polymers;
@@ -70,6 +76,7 @@ public class SaveManager : MonoBehaviour
 
         GameManager.instance.SetGalacticDepth(save.galacticDepth + 1);
 
+        // Read items back into the game using the asset manager
         InventoryManager.instance.inventory = new List<ItemData>();
         foreach (String itemName in save.playerInventoryItems)
         {
@@ -89,8 +96,10 @@ public class SaveManager : MonoBehaviour
 
     public void DeleteSave()
     {
+        // Create path to location
         string path = Application.persistentDataPath + "/savefile.json";
 
+        // Delete the file if it is there
         if (File.Exists(path))
         {
             File.Delete(path);

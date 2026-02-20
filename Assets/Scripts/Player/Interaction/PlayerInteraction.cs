@@ -108,13 +108,17 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
 
     public void OnInteract(InputAction.CallbackContext context)
     {
+        // Only activate on initial press
         if (!context.performed) return;
+
+        // Dont allow unless the player is playing
         if (GameManager.instance.GetGameState() != GameManager.GameState.Playing)
         {
             GameManager.instance.ChangeGameState(GameManager.GameState.Playing);
             return;
         }
 
+        // Open the chest
         if (collisionCheck.IsTouchingChest())
         {
             ChestData chest = collisionCheck.GetItemsInChest();
@@ -123,6 +127,7 @@ public class PlayerInteraction : MonoBehaviour, InputSystem_Actions.IPlayerInter
         }
         else if (collisionCheck.IsTouchingWorkbench())
         {
+            // Open the workbench
             GameManager.instance.ChangeGameState(GameManager.GameState.WorkbenchMenu);
         }
     }

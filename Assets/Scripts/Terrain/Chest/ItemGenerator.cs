@@ -8,9 +8,13 @@ public class ItemGenerator : MonoBehaviour
 
     public List<ItemData> GenerateRandomChestLoot(float difficulty)
     {
+        // Create the list of items for the chest
         List<ItemData> items = new List<ItemData>();
+
+        // Guarantee at least one item
         items.Add(GetRandomWeightedItem(difficulty));
 
+        // Use random chance to make more items less likely
         for (int i = 0; i < 10; i++)
         {
             if (Random.value < 0.05f) items.Add(GetRandomWeightedItem(difficulty));

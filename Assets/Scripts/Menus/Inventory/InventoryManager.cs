@@ -149,11 +149,6 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
     #endregion
     #region Interactables
 
-
-    public bool IsInMenu()
-    {
-        return inventoryUI.activeSelf;
-    }
     
     public void OpenWithChestLoot(ChestData data)
     {
@@ -167,15 +162,22 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
 
     public void MoveItem(ItemData data, bool inChest)
     {
+        // Move direction based on where item is stored
         if (!inChest)
         {
-            chestData.AddToInventory(data);
-            inventory.Remove(data);
+            if (chestData.HasSpace())
+            {
+                chestData.AddToInventory(data);
+                inventory.Remove(data);
+            }
         }
         else
         {
-            inventory.Add(data);
-            chestData.RemoveFromInventory(data);
+            if (instance.space > instance.inventory.Count)
+            {
+                inventory.Add(data);
+                chestData.RemoveFromInventory(data);
+            }
         }
 
         UpdateUI();        

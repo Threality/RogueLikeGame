@@ -92,10 +92,10 @@ public class GameManager : MonoBehaviour
 
     public void ChangeGameState(GameState state)
     {
-        if (curState == GameState.DeathMenu) return;
-
+        // Set all UI to off
         if (state != GameState.MainMenu) MenuManager.instance.DisableAll();
 
+        // Load the correct UI and other conditions
         switch (state)
         {
             case GameState.Playing:
