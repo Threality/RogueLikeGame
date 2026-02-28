@@ -36,7 +36,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler
 
     public void OnClick()
     {
-        if (inventoryManager.chestMenu && inventoryManager.equippedItem != data)
+        if (inventoryManager.chestMenu && data != null && inventoryManager.equippedItem != data)
         {
             inventoryManager.MoveItem(data, inChest);
         }

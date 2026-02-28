@@ -5,7 +5,7 @@ public class CollisionCheck : MonoBehaviour
 {
     private bool isTouchingLadder = false;
     private bool isTouchingWorkbench = false;
-    private List<GameObject> chestList = new List<GameObject>();
+    public List<GameObject> chestList = new List<GameObject>();
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

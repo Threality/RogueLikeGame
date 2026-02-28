@@ -190,7 +190,7 @@ public class InventoryManager : MonoBehaviour, InputSystem_Actions.IInventoryAct
 
     private void UpdateUI()
     {
-        if (inventorySlots == null || inventorySlots.Length == 0)
+        if (inventorySlots == null/* || inventorySlots.Length == 0*/)
         {
             InitialiseSlots();
         }
